@@ -19,6 +19,9 @@ const project = new awscdk.AwsCdkTypeScriptApp({
       setupFiles: ['dotenv/config'],
     },
   },
+  tsconfig: {
+    allowJs: true
+  },
   gitignore: [
     '.env',
     '.vscode',
