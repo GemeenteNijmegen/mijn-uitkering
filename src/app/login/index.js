@@ -1,16 +1,39 @@
 const cookie = require('cookie');
+const { DynamoDBClient, GetItemCommand } = require("@aws-sdk/client-dynamodb");
 
 async function checkLogin(event) {
     if('cookies' in event == false) {
-        console.log('no cookies');
         return false;
     }
     const cookies = cookie.parse(event.cookies.join(';'));
     if('session' in cookies == false) { 
-        console.log('no session');
         return false; 
     }
-    return true;
+    const session = await getSession(cookies.session);
+    if(session) {
+        return session.loggedin.BOOL;
+    }
+    return false;
+}
+
+async function getSession(sessionId) {
+    const dbClient = new DynamoDBClient();
+    const getItemCommand = new GetItemCommand({
+        TableName: process.env.SESSION_TABLE,
+        Key: {
+            'sessionid': { S: sessionId }
+        }
+    });
+    try {
+        const session = await dbClient.send(getItemCommand);
+        if(session.Item) {
+            return session.Item;
+        }
+    } catch(err) {
+        console.log('Error getting session from DynamoDB: ' + err);
+        return false;
+    }
+    return false;
 }
 
 function redirectToHome() {
@@ -22,7 +45,6 @@ function redirectToHome() {
 
 exports.handler = async (event, context) => {
     try {
-        console.log(event);
         const isLoggedIn = await checkLogin(event);
         if(isLoggedIn) {
             return redirectToHome();
