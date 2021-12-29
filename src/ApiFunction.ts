@@ -4,17 +4,17 @@ import { aws_lambda, aws_dynamodb } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
 export interface ApiFunctionProps {
-    description: string,
-    codePath: string,
-    table: aws_dynamodb.Table
-    tablePermissions: string,
+  description: string;
+  codePath: string;
+  table: aws_dynamodb.Table;
+  tablePermissions: string;
 }
-  
+
 export class ApiFunction extends Construct {
   lambda: aws_lambda.Function;
   constructor(scope: Construct, id: string, props: ApiFunctionProps) {
     super(scope, id);
-    this.lambda = new aws_lambda.Function(this, `$(this.id)-lambda`, {
+    this.lambda = new aws_lambda.Function(this, '$(this.id)-lambda', {
       runtime: aws_lambda.Runtime.NODEJS_14_X,
       handler: 'index.handler',
       description: props.description,
@@ -28,6 +28,6 @@ export class ApiFunction extends Construct {
       tableEnvironmentVariableName: 'SESSION_TABLE',
     };
 
-    new LambdaToDynamoDB(this, `$(this.id)-lambda-with-db`, lambdaProps);
+    new LambdaToDynamoDB(this, '$(this.id)-lambda-with-db', lambdaProps);
   }
 }

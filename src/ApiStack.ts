@@ -16,11 +16,11 @@ export class ApiStack extends Stack {
       description: 'Mijn Uitkering webapplicatie',
     });
 
-    const loginFunction = new ApiFunction(this, 'login-function', { 
+    const loginFunction = new ApiFunction(this, 'login-function', {
       description: 'Login-pagina voor de Mijn Uitkering-applicatie.',
       codePath: 'app/login',
       table: props.sessionsTable.table,
-      tablePermissions: 'Read'
+      tablePermissions: 'Read',
     });
 
     api.addRoutes({
