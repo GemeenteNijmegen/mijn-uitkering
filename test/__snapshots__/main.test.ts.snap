@@ -48,11 +48,7 @@ Object {
     },
     \\"build\\": {
       \\"commands\\": [
-<<<<<<< HEAD
-        \\"cdk-assets --path \\\\\\"assembly-test-mijn-uitkering-api/testmijnuitkeringapiapistack7064CFE8.assets.json\\\\\\" --verbose publish \\\\\\"99261c095d8bbe1017e47071f8ff343708e8f58b861a80f854119b9dfd2c9fa1:test-eu-west-1\\\\\\"\\"
-=======
-        \\"cdk-assets --path \\\\\\"assembly-test-mijn-uitkering-api/testmijnuitkeringapiapistack7064CFE8.assets.json\\\\\\" --verbose publish \\\\\\"4eacbc37a34e477d5b77a63d67bfe2abc933d73ecf323d194e2d38cb55229876:test-eu-west-1\\\\\\"\\"
->>>>>>> d6da335... Use lambda-dynamodb construct
+        \\"cdk-assets --path \\\\\\"assembly-test-mijn-uitkering-api/testmijnuitkeringapiapistack7064CFE8.assets.json\\\\\\" --verbose publish \\\\\\"8e724636baee2b3779a86010d88b63feeb03f4e18167d846c3ab1ad0f1335053:test-eu-west-1\\\\\\"\\"
       ]
     }
   }
