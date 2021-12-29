@@ -1,5 +1,6 @@
 {
   "name": "app2",
+  "description": "Mijn Uitkering",
   "scripts": {
     "build": "npx projen build",
     "bundle": "npx projen bundle",
@@ -56,6 +57,9 @@
     "setupFiles": [
       "dotenv/config"
     ],
+    "testPathIgnorePatterns": [
+      "/cdk.out"
+    ],
     "testMatch": [
       "**/__tests__/**/*.ts?(x)",
       "**/?(*.)+(spec|test).ts?(x)"
@@ -70,10 +74,7 @@
     ],
     "coverageDirectory": "coverage",
     "coveragePathIgnorePatterns": [
-      "/node_modules/"
-    ],
-    "testPathIgnorePatterns": [
-      "/node_modules/"
+      "/cdk.out"
     ],
     "watchPathIgnorePatterns": [
       "/node_modules/"
