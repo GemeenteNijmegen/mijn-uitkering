@@ -109,6 +109,14 @@
         }
       ]
     },
+    "install:login": {
+      "name": "install:login",
+      "steps": [
+        {
+          "exec": "cd src/app/login && npm install"
+        }
+      ]
+    },
     "package": {
       "name": "package",
       "description": "Creates the distribution package"
@@ -119,6 +127,14 @@
       "steps": [
         {
           "spawn": "synth"
+        }
+      ]
+    },
+    "postinstall": {
+      "name": "postinstall",
+      "steps": [
+        {
+          "exec": "npm run install:login"
         }
       ]
     },
