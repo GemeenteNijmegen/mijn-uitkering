@@ -6,8 +6,9 @@ beforeAll(() => {
   global.console.log = jest.fn();
 });
 
-test('Return login page', async () => {
+test('Return login page with correct link', async () => {
   const result = await lambda.handler({}, {});
+  expect(result.body).toMatch('&scope=openid');
   expect(result.statusCode).toBe(200);
 });
 
@@ -57,5 +58,5 @@ test('DynamoDB error', async () => {
   ddbMock.mockImplementation(() => { throw new Error('Not supported!'); });
   const result = await lambda.handler({ cookies: ['session=12345'] }, {});
   expect(ddbMock).toHaveBeenCalledTimes(1);
-  expect(result.statusCode).toBe(200);
+  expect(result.statusCode).toBe(500);
 });
