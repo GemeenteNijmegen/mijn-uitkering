@@ -34,20 +34,20 @@ test('No redirect if session cookie doesn\'t exist', async () => {
 test('Create session if no session exists', async () => {
 
   await lambda.handler({}, {});
-  
+
   expect(ddbMock).toHaveBeenCalledTimes(1);
   expect(ddbMock).toHaveBeenCalledWith(expect.objectContaining({
     input: expect.objectContaining({
       Item: expect.objectContaining({
         bsn: {
-          S: ''
+          S: '',
         },
         loggedin: {
-          BOOL: false
+          BOOL: false,
         },
       }),
-      TableName: process.env.SESSION_TABLE
-    })
+      TableName: process.env.SESSION_TABLE,
+    }),
   }));
 });
 
@@ -88,7 +88,7 @@ test('Unknown session returns login page', async () => {
 test('Request without session returns session cookie', async () => {
   const result = await lambda.handler({}, {});
   expect(result.cookies).toEqual(
-    expect.arrayContaining([expect.stringMatching('session=')])
+    expect.arrayContaining([expect.stringMatching('session=')]),
   );
 });
 
