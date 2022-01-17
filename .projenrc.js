@@ -24,7 +24,8 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   },
   scripts: {
     'install:login': 'copyfiles -f src/shared/*.js src/app/login/shared && cd src/app/login && npm install',
-    'postinstall': 'npm run install:login',
+    'install:auth': 'copyfiles -f src/shared/*.js src/app/auth/shared && cd src/app/auth && npm install',
+    'postinstall': 'npm run install:login && npm run install:auth',
   },
   eslintOptions: {
     devdirs: ['src/app/login/tests', '/test', '/build-tools'],
