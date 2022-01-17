@@ -11,7 +11,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   ], /* Runtime dependencies of this module. */
   // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */
   devDeps: [
-    'copyfiles'
+    'copyfiles',
   ], /* Build dependencies for this module. */
   // packageName: undefined,  /* The "name" in package.json. */
   // release: undefined,      /* Add release management to this project. */
@@ -28,7 +28,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     'postinstall': 'npm run install:login && npm run install:auth',
   },
   eslintOptions: {
-    devdirs: ['src/app/login/tests', '/test', '/build-tools'],
+    devdirs: ['src/app/login/tests', 'src/app/auth/tests', '/test', '/build-tools'],
   },
   gitignore: [
     '.env',

@@ -38,8 +38,8 @@ export class ApiStack extends Stack {
       tablePermissions: 'ReadWrite',
       applicationUrlBase: api.url,
       environment: {
-        'OIDC_SECRET_ARN': oidcSecretArn
-      }
+        OIDC_SECRET_ARN: oidcSecretArn,
+      },
     });
 
     api.addRoutes({

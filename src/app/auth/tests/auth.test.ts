@@ -27,23 +27,23 @@ jest.mock('openid-client', () => {
       return {
         Client: jest.fn(() => {
           return {
-            callback: jest.fn(() => { 
+            callback: jest.fn(() => {
               return {
                 claims: jest.fn(() => {
                   return {
                     aud: process.env.OIDC_CLIENT_ID,
-                    sub: 12345
-                  }
-                })
-              }
+                    sub: 12345,
+                  };
+                }),
+              };
             }),
-            callbackParams: jest.fn(() => {})
-          }
+            callbackParams: jest.fn(() => {}),
+          };
         }),
-        ...originalIssuer
-      } 
+        ...originalIssuer,
+      };
     }),
-  }
+  };
 });
 
 beforeEach(() => {
@@ -55,7 +55,7 @@ test('Successful auth redirects to home', async () => {
   const sessionId = '12345';
   const output: GetSecretValueCommandOutput = {
     $metadata: {},
-    SecretString: 'ditiseennepgeheim'
+    SecretString: 'ditiseennepgeheim',
   };
   secretsMock.mockImplementation(() => output);
   const getItemOutput: Partial<GetItemCommandOutput> = {
@@ -64,12 +64,12 @@ test('Successful auth redirects to home', async () => {
         BOOL: false,
       },
       state: {
-        S: '12345'
-      }
+        S: '12345',
+      },
     },
   };
   ddbMock.mockImplementation(() => getItemOutput);
-  
+
   const result = await lambda.handler({ cookies: [`session=${sessionId}`] }, {});
   expect(result.statusCode).toBe(302);
   expect(result.headers.Location).toBe('/');
