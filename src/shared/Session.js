@@ -120,7 +120,7 @@ class Session {
     /**
      * Create a new session, store in dynamodb
      */
-    async createSession() {
+    async createSession(state) {
         console.debug('start session create');
         const state = generators.state();
         const sessionId = crypto.randomUUID();
