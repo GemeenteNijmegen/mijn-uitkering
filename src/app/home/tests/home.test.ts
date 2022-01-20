@@ -29,7 +29,12 @@ beforeEach(() => {
     ddbMock.mockImplementation(() => getItemOutput);
 })
 
-test('Shows results page', async () => {
+test('Returns 200', async () => {
     const result = await lambda.handler({ cookies: [`session=12345`] }, {});
     expect(result.statusCode).toBe(200);
+});
+
+test('Shows overview page', async () => {
+    const result = await lambda.handler({ cookies: [`session=12345`] }, {});
+    expect(result.body).toMatch(`Mijn Uitkering`);
 });

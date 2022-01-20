@@ -1,5 +1,4 @@
 const { Session } = require('./shared/Session');
-const { OpenIDConnect } = require('./shared/OpenIDConnect');
 const { render } = require('./shared/render');
 
 function redirectToLogin() {
@@ -20,7 +19,7 @@ exports.handler = async (event, context) => {
         } 
         // Get API data
         // render page
-        const html = await render({authUrl: authUrl}, __dirname + '/templates/home.mustache');
+        const html = await render({}, __dirname + '/templates/home.mustache');
         response = {
             'statusCode': 200,
             'body': html,
