@@ -1,6 +1,5 @@
 const cookie = require('cookie');
 const crypto = require('crypto');
-const { generators } = require('openid-client');
 const { DynamoDBClient, GetItemCommand, PutItemCommand, UpdateItemCommand } = require("@aws-sdk/client-dynamodb");
 
 class Session {
@@ -122,7 +121,6 @@ class Session {
      */
     async createSession(state) {
         console.debug('start session create');
-        const state = generators.state();
         const sessionId = crypto.randomUUID();
         const now = new Date();
         const ttl = Math.floor((now / 1000) + 15 * 60).toString(); // ttl is 15 minutes
