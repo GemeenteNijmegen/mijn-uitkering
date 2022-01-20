@@ -29,7 +29,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     'postinstall': 'npm run install:login && npm run install:home',
   },
   eslintOptions: {
-    devdirs: ['src/app/**/tests', '/test', '/build-tools'],
+    devdirs: ['src/app/login/tests', 'src/app/auth/tests', 'src/app/home/tests', '/test', '/build-tools'],
   },
   gitignore: [
     '.env',
