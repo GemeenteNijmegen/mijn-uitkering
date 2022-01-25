@@ -150,7 +150,7 @@
       "name": "postinstall",
       "steps": [
         {
-          "exec": "npm run install:login && npm run install:home"
+          "exec": "npm run install:login && npm run install:auth && npm run install:home"
         }
       ]
     },
