@@ -12,12 +12,12 @@ class UitkeringsApi {
     async getUitkeringen() {
         let data = await this.connector.requestData();
         const object = await xml2js.parseStringPromise(data);
-        console.debug(object);
         const uitkeringsRows =  this.mapUitkeringsRows(object);
-        const fields = this.mapUitkering(uitkeringsRows);
-        console.debug(uitkeringsRows);
-        console.debug(fields);
-        return fields;
+        const uitkeringen = this.mapUitkering(uitkeringsRows);
+        if(uitkeringen) {
+            return uitkeringen;
+        }
+        return {'uitkeringen': []};
     }
 
     mapUitkeringsRows(object) {
@@ -25,6 +25,7 @@ class UitkeringsApi {
             'soap:Envelope.soap:Body[0].mij:dataResponse[0].groups[].group[0]': {
                 key: 'uitkeringen',
                 transform: ((value) => {
+                    if(!value) { return null; }
                     const groups = value.filter((group) => {
                         return group.groupName[0] == 'uitkeringen';
                     });
@@ -38,18 +39,8 @@ class UitkeringsApi {
     mapUitkering(object) {
         const map = {
             'uitkeringen.row[].pageName[0]': 'uitkeringen[].type',
-            'uitkeringen.row[].fields[0].field': {
-                key: 'fields',
-                transform: ((value) => { 
-                    console.debug(value);
-                    return (value.length > 0) ? value[0].map((el) => {
-                        const obj = {};
-                        obj[el.name] = el.value[0];
-                        console.debug(el);
-                        return obj;
-                    }) : null;
-                })
-            }
+            'uitkeringen.row[].fields[0].field[].name[0]': 'uitkeringen[].fields[].label',
+            'uitkeringen.row[].fields[0].field[].value[0]': 'uitkeringen[].fields[].value',
         };
         return ObjectMapper(object, map);
     }
