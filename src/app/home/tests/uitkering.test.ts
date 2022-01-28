@@ -16,11 +16,11 @@ test('returns one uitkering', async () => {
   const result = await api.getUitkeringen();
   expect(result.uitkeringen).toHaveLength(1);
   expect(result.uitkeringen[0].fields).toBeInstanceOf(Array);
+  console.debug(JSON.stringify(result));
 });
 
 test('returns two uitkeringen', async () => {
   const api = new UitkeringsApi('tweeuitkeringen', FileConnector);
   const result = await api.getUitkeringen();
   expect(result.uitkeringen).toHaveLength(2);
-  console.debug(JSON.stringify(result));
 });
