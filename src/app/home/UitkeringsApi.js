@@ -14,9 +14,8 @@ class UitkeringsApi {
         const object = await xml2js.parseStringPromise(data);
         const uitkeringsRows =  this.mapUitkeringsRows(object);
         let uitkeringen = this.mapUitkering(uitkeringsRows);
-        uitkeringen = this.addFieldsByName(uitkeringen);
-        console.debug(JSON.stringify(uitkeringen));
         if(uitkeringen) {
+            uitkeringen = this.addFieldsByName(uitkeringen);
             return uitkeringen;
         }
         return {'uitkeringen': []};
