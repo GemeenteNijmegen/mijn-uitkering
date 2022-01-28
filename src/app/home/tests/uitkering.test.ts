@@ -15,7 +15,7 @@ test('returns empty if not found', async () => {
     const api = new UitkeringsApi('12345678', FileConnector);
     const result = await api.getUitkeringen();
     expect(result.uitkeringen).toHaveLength(1);
-    expect(result[0].fields).toBeInstanceOf(Array);
+    expect(result.uitkeringen[0].fields).toBeInstanceOf(Array);
   });
   
   test('returns two uitkeringen', async () => {
