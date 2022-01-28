@@ -22,7 +22,7 @@ beforeEach(() => {
         BOOL: true,
       },
       bsn: {
-        S: '12345678'
+        S: '12345678',
       },
       state: {
         S: '12345',
