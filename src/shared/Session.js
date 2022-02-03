@@ -1,7 +1,6 @@
 const cookie = require('cookie');
 const crypto = require('crypto');
 const { DynamoDBClient, GetItemCommand, PutItemCommand, UpdateItemCommand } = require("@aws-sdk/client-dynamodb");
-const { type } = require('os');
 
 class Session {
     sessionId = false;
@@ -26,8 +25,16 @@ class Session {
      * @returns string | false
      */
     getSessionId(event) {
-        if ('cookies' in event) {
-            const cookies = cookie.parse(event.cookies.join(';'));
+        console.debug(typeof event);
+        if(typeof event == 'Object') {
+            if ('cookies' in event) {
+                const cookies = cookie.parse(event.cookies.join(';'));
+                if ('session' in cookies) {
+                    return cookies.session;
+                }
+            }
+        } else if(typeof event == 'string') {
+            const cookies = cookie.parse(event);
             if ('session' in cookies) {
                 return cookies.session;
             }
