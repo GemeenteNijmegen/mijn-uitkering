@@ -145,6 +145,14 @@
         }
       ]
     },
+    "nag": {
+      "name": "nag",
+      "steps": [
+        {
+          "exec": "mkdir ./cfnnag_output && for template in $(find ./cdk.out -type f -maxdepth 2 -name '*.template.json'); do cp $template ./cfnnag_output; done"
+        }
+      ]
+    },
     "package": {
       "name": "package",
       "description": "Creates the distribution package"
@@ -166,7 +174,7 @@
       "name": "postinstall",
       "steps": [
         {
-          "exec": "npm run install:login && npm run install:auth && npm run install:home"
+          "exec": "npm run install:login && npm run install:auth && npm run install:home && npm run nag"
         }
       ]
     },

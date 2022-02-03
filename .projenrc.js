@@ -28,7 +28,8 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     'install:login': 'copyfiles -f src/shared/*.js src/app/login/shared && cd src/app/login && npm install',
     'install:auth': 'copyfiles -f src/shared/*.js src/app/auth/shared && cd src/app/auth && npm install',
     'install:home': 'copyfiles -f src/shared/*.js src/app/home/shared && cd src/app/home && npm install',
-    'postinstall': 'npm run install:login && npm run install:auth && npm run install:home',
+    'nag': 'mkdir ./cfnnag_output && for template in $(find ./cdk.out -type f -maxdepth 2 -name \'*.template.json\'); do cp $template ./cfnnag_output; done',
+    'postinstall': 'npm run install:login && npm run install:auth && npm run install:home && npm run nag',
   },
   eslintOptions: {
     devdirs: ['src/app/login/tests', 'src/app/auth/tests', 'src/app/home/tests', '/test', '/build-tools'],
@@ -36,6 +37,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   gitignore: [
     '.env',
     '.vscode',
+    'cfnnag_output',
     'src/app/**/shared',
   ],
 });

@@ -33,6 +33,7 @@ jspm_packages/
 .cache
 .env
 .vscode
+cfnnag_output
 src/app/**/shared
 !/.projenrc.js
 /test-reports/
