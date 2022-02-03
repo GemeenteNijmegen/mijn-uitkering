@@ -24,7 +24,7 @@ export class ApiFunction extends Construct {
       handler: 'index.handler',
       description: props.description,
       code: Lambda.Code.fromAsset(path.join(__dirname, props.codePath)),
-      insightsVersion: lambda.LambdaInsightsVersion.fromInsightVersionArn(insightsArn),
+      insightsVersion: Lambda.LambdaInsightsVersion.fromInsightVersionArn(insightsArn),
       environment: {
         APPLICATION_URL_BASE: props.applicationUrlBase || '',
         AUTH_URL_BASE: SSM.StringParameter.valueForStringParameter(this, Statics.ssmAuthUrlBaseParameter),
