@@ -104,7 +104,6 @@ class OpenIDConnect {
             return false;
         }
         console.log(JSON.stringify(claims));
-        const bsn = claims.sub;
         return claims;
     }
     
