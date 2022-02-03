@@ -32,7 +32,7 @@ function parseEvent(event) {
     return { 'cookies': cookies };
 }
 
-async function loginPage(cookies) {
+async function handleRequest(cookies) {
     let session = new Session(cookies);
     await session.init();
     if(session.isLoggedIn() === true) {
@@ -50,9 +50,8 @@ async function loginPage(cookies) {
 exports.handler = async (event, context) => {
     try {
         const params = parseEvent(event);
-        const response = await loginPage(params.cookies);
+        const response = await handleRequest(params.cookies);
         return response;
-    
     } catch (err) {
         console.error(err);
         response = {
