@@ -32,12 +32,8 @@ async function handleRequest(cookies, queryStringParamCode) {
 }
 
 function parseEvent(event) {
-    let cookies = false;
-    if ('cookies' in event) {
-        cookies = event.cookies.join(';');
-    }
     return { 
-        'cookies': cookies,
+        'cookies': event?.cookies?.join(';'),
         'code': event?.queryStringParameters?.code
     };
 }

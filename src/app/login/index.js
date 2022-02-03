@@ -24,14 +24,6 @@ function htmlResponse(body, cookies) {
     return response;
 }
 
-function parseEvent(event) {
-    let cookies = false;
-    if ('cookies' in event) {
-        cookies = event.cookies.join(';');
-    }
-    return { 'cookies': cookies };
-}
-
 async function handleRequest(cookies) {
     let session = new Session(cookies);
     await session.init();
@@ -45,6 +37,10 @@ async function handleRequest(cookies) {
     const html = await render({authUrl: authUrl}, __dirname + '/templates/login.mustache');
     const newCookies = ['session='+ session.sessionId + '; HttpOnly; Secure;'];
     return htmlResponse(html, newCookies);
+}
+
+function parseEvent(event) {
+    return { 'cookies': event?.cookies?.join(';') };
 }
 
 exports.handler = async (event, context) => {

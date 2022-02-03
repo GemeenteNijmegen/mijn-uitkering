@@ -20,24 +20,15 @@ class Session {
     }
 
     /**
-     * Parses the event object for the session id stored in a cookie.
-     * @param {object} event the event object provided to lambda
+     * Parses the cookie string for the session id.
+     * @param {object} cookiestring a standard cookie header value
      * @returns string | false
      */
-    getSessionId(event) {
-        console.debug(typeof event);
-        if(typeof event == 'Object') {
-            if ('cookies' in event) {
-                const cookies = cookie.parse(event.cookies.join(';'));
-                if ('session' in cookies) {
-                    return cookies.session;
-                }
-            }
-        } else if(typeof event == 'string') {
-            const cookies = cookie.parse(event);
-            if ('session' in cookies) {
-                return cookies.session;
-            }
+    getSessionId(cookieString) {
+        if(!cookieString) { return false; }
+        const cookies = cookie.parse(cookieString);
+        if ('session' in cookies) {
+            return cookies.session;
         }
         return false;
     }
