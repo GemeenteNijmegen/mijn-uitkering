@@ -17,7 +17,8 @@ function htmlResponse(body, cookies) {
         'statusCode': 200,
         'body': body,
         'headers': { 
-            'Content-type': 'text/html'
+            'Content-type': 'text/html',
+            'Content-Security-Policy': cspValues
         },
         'cookies': cookies
     };
