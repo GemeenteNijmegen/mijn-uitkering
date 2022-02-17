@@ -16,7 +16,7 @@ export interface ApiStackProps extends StackProps {
  * DynamoDB sessions table to be provided and thus created first)
  */
 export class ApiStack extends Stack {
-  apiGatewayDomain?: string;
+  apiGatewayDomain: string;
   constructor(scope: Construct, id: string, props: ApiStackProps) {
     super(scope, id);
     const api = new apigatewayv2.HttpApi(this, 'mijnuitkering-api', {
