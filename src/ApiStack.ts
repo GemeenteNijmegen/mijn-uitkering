@@ -76,12 +76,12 @@ export class ApiStack extends Stack {
    * Clean a url placeholder. apigateway returns a url like
    * https://${Token[TOKEN.246]}.execute-api.eu-west-1.${Token[AWS.URLSuffix.3]}/
    * which can't be parsed by the URL class.
-   * 
+   *
    * @param url a url-like string optionally containing protocol and trailing slash
    * @returns a url-like string cleaned of protocol and trailing slash
    */
   cleanDomain(url?: string): string {
-    if(!url) { return ''; }
+    if (!url) { return ''; }
     let cleanedUrl = url
       .replace(/^https?:\/\//, '') //protocol
       .replace(/\/$/, ''); //optional trailing slash
