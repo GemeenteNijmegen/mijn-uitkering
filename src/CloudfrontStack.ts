@@ -3,7 +3,7 @@ import { Stack, StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { HttpOrigin } from "aws-cdk-lib/aws-cloudfront-origins";
 export interface CloudfrontStackProps extends StackProps {
-    ApiGatewayDomain?: string;
+    ApiGatewayDomain: string;
 }
 
 export class CloudfrontStack extends Stack {
@@ -13,7 +13,7 @@ export class CloudfrontStack extends Stack {
         new Distribution(this, 'cf-distribution', {
             priceClass: PriceClass.PRICE_CLASS_100,
             defaultBehavior: {
-                origin: new HttpOrigin(props.ApiGatewayDomain || '')
+                origin: new HttpOrigin(props.ApiGatewayDomain)
             }
         });
     }
