@@ -22,7 +22,7 @@ export class ApiStack extends Stack {
     const api = new apigatewayv2.HttpApi(this, 'mijnuitkering-api', {
       description: 'Mijn Uitkering webapplicatie',
     });
-    const apiUrl = new URL(api.url);
+    const apiUrl = new URL(api.url || '');
     this.apiGatewayDomain = apiUrl.hostname;
     const loginFunction = new ApiFunction(this, 'login-function', {
       description: 'Login-pagina voor de Mijn Uitkering-applicatie.',
