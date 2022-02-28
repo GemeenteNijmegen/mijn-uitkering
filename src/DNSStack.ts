@@ -22,13 +22,13 @@ export class DNSStack extends Stack {
     const rootZoneName = SSM.StringParameter.valueForStringParameter(this, Statics.cspRootZoneName);
     const cspRootZone = Route53.HostedZone.fromHostedZoneAttributes(this, 'cspzone', {
       hostedZoneId: rootZoneId,
-      zoneName: rootZoneName
+      zoneName: rootZoneName,
     });
-    
+
     new Route53.TxtRecord(this, 'test-record', {
       zone: cspRootZone,
       recordName: 'tstjoost',
-      values: ['ditiseentestvanjoost']
+      values: ['ditiseentestvanjoost'],
     });
   }
 }
