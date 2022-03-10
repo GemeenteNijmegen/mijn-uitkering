@@ -1,7 +1,7 @@
 const { Session } = require('./shared/Session');
 const { render } = require('./shared/render');
 const { UitkeringsApi } = require('./UitkeringsApi');
-const { FileConnector } = require('./FileConnector');
+const { HTTPConnector } = require('./HTTPConnector');
 
 function redirectResponse(location, code = 302) {
     return {
@@ -26,7 +26,7 @@ async function requestHandler(cookies) {
         return redirectResponse('/login');
     } 
     // Get API data
-    const api = new UitkeringsApi(session.getValue('bsn'), FileConnector);
+    const api = new UitkeringsApi(session.getValue('bsn'), HTTPConnector);
     const data = await api.getUitkeringen();
     
     // render page

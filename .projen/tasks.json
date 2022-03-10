@@ -125,7 +125,7 @@
       "name": "install:auth",
       "steps": [
         {
-          "exec": "copyfiles -f src/shared/*.js src/app/auth/shared && cd src/app/auth && npm install"
+          "exec": "copyfiles -f src/shared/*.js src/app/auth/shared && cd src/app/auth && npm install --production"
         }
       ]
     },
@@ -133,7 +133,7 @@
       "name": "install:home",
       "steps": [
         {
-          "exec": "copyfiles -f src/shared/*.js src/app/home/shared && cd src/app/home && npm install"
+          "exec": "copyfiles -f src/shared/*.js src/app/home/shared && cd src/app/home && npm install --production"
         }
       ]
     },
@@ -141,7 +141,7 @@
       "name": "install:login",
       "steps": [
         {
-          "exec": "copyfiles -f src/shared/*.js src/app/login/shared && cd src/app/login && npm install"
+          "exec": "copyfiles -f src/shared/*.js src/app/login/shared && cd src/app/login && npm install --production"
         }
       ]
     },
@@ -149,7 +149,7 @@
       "name": "install:logout",
       "steps": [
         {
-          "exec": "copyfiles -f src/shared/*.js src/app/logout/shared && cd src/app/logout && npm install"
+          "exec": "copyfiles -f src/shared/*.js src/app/logout/shared && cd src/app/logout && npm install --production"
         }
       ]
     },

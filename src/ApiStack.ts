@@ -1,6 +1,6 @@
 import * as apigatewayv2 from '@aws-cdk/aws-apigatewayv2-alpha';
 import { HttpLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
-import { aws_secretsmanager, Stack, StackProps, Duration } from 'aws-cdk-lib';
+import { aws_secretsmanager, Stack, StackProps, Duration, aws_ssm as SSM } from 'aws-cdk-lib';
 import { Distribution, PriceClass, OriginRequestPolicy, ViewerProtocolPolicy, AllowedMethods, ResponseHeadersPolicy, HeadersFrameOption, HeadersReferrerPolicy, CachePolicy, CacheCookieBehavior, CacheHeaderBehavior, CacheQueryStringBehavior, OriginRequestHeaderBehavior } from 'aws-cdk-lib/aws-cloudfront';
 import { HttpOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
@@ -143,16 +143,23 @@ export class ApiStack extends Stack {
       applicationUrlBase: baseUrl,
       environment: {
         CLIENT_SECRET_ARN: oidcSecret.secretArn,
+        MTLS_CLIENT_CERT: SSM.StringParameter.valueForStringParameter(this, Statics.ssmMTLSClientCert),
+        UITKERING_API_URL: SSM.StringParameter.valueForStringParameter(this, Statics.ssmUitkeringsApiEndpointUrl)
       },
     });
     oidcSecret.grantRead(authFunction.lambda);
 
+    const secretMTLSPrivateKeyArn = aws_secretsmanager.Secret.fromSecretNameV2(this, 'tls-key-secret', Statics.secretMTLSPrivateKey);
     const homeFunction = new ApiFunction(this, 'home-function', {
       description: 'Home-lambda voor de Mijn Uitkering-applicatie.',
       codePath: 'app/home',
       table: this.sessionsTable,
       tablePermissions: 'ReadWrite',
       applicationUrlBase: baseUrl,
+      environment: {
+        MTLS_PRIVATE_KEY_ARN: secretMTLSPrivateKeyArn,
+        MTLS_CLIENT_CERT: 
+      }
     });
 
     this.api.addRoutes({
