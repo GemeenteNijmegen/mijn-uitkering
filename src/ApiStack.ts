@@ -142,9 +142,7 @@ export class ApiStack extends Stack {
       tablePermissions: 'ReadWrite',
       applicationUrlBase: baseUrl,
       environment: {
-        CLIENT_SECRET_ARN: oidcSecret.secretArn,
-        MTLS_CLIENT_CERT: SSM.StringParameter.valueForStringParameter(this, Statics.ssmMTLSClientCert),
-        UITKERING_API_URL: SSM.StringParameter.valueForStringParameter(this, Statics.ssmUitkeringsApiEndpointUrl)
+        CLIENT_SECRET_ARN: oidcSecret.secretArn
       },
     });
     oidcSecret.grantRead(authFunction.lambda);
@@ -157,8 +155,10 @@ export class ApiStack extends Stack {
       tablePermissions: 'ReadWrite',
       applicationUrlBase: baseUrl,
       environment: {
-        MTLS_PRIVATE_KEY_ARN: secretMTLSPrivateKeyArn,
-        MTLS_CLIENT_CERT: 
+        MTLS_PRIVATE_KEY_ARN: secretMTLSPrivateKeyArn.secretArn,
+        MTLS_CLIENT_CERT: SSM.StringParameter.valueForStringParameter(this, Statics.ssmMTLSClientCert),
+        MTLS_ROOT_CA: SSM.StringParameter.valueForStringParameter(this, Statics.ssmMTLSRootCA),
+        UITKERING_API_URL: SSM.StringParameter.valueForStringParameter(this, Statics.ssmUitkeringsApiEndpointUrl)
       }
     });
 
