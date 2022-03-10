@@ -28,17 +28,17 @@ export abstract class Statics {
   /**
    * Certificate for mTLS
    */
-   static readonly ssmMTLSClientCert: string = '/cdk/mijn-uitkering/mtls-clientcert';
+  static readonly ssmMTLSClientCert: string = '/cdk/mijn-uitkering/mtls-clientcert';
 
-   /**
+  /**
     * Root CA for mTLS (PKIO root)
     */
-    static readonly ssmMTLSRootCA: string = '/cdk/mijn-uitkering/mtls-rootca';
+  static readonly ssmMTLSRootCA: string = '/cdk/mijn-uitkering/mtls-rootca';
 
   /**
    * Uitkeringsgegevens API endpoint
    */
-      static readonly ssmUitkeringsApiEndpointUrl: string = '/cdk/mijn-uitkering/uitkerings-api-url';
+  static readonly ssmUitkeringsApiEndpointUrl: string = '/cdk/mijn-uitkering/uitkerings-api-url';
 
   /**
    * Route53 Zone ID and name for csp-nijmegen.nl in this account.

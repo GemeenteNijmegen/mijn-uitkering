@@ -1,16 +1,15 @@
-import { UitkeringsApi } from '../UitkeringsApi';
+import fs from 'fs';
 import { FileConnector } from '../FileConnector';
 import { HTTPConnector } from '../HTTPConnector';
-import fs from 'fs';
+import { UitkeringsApi } from '../UitkeringsApi';
 
 
 async function getStringFromFilePath(filePath: string) {
   return new Promise((res, rej) => {
-      fs.readFile(filePath, (err, data) => {
-          if (err)
-              return rej(err);
-          return res(data.toString());
-      });
+    fs.readFile(filePath, (err, data) => {
+      if (err) {return rej(err);}
+      return res(data.toString());
+    });
   });
 }
 
@@ -41,7 +40,7 @@ test('returns two uitkeringen', async () => {
 
 // This test doesn't run in CI by default, depends on unavailable secrets
 test('HTTP Connector', async () => {
-  if(!process.env.CERTPATH || !process.env.KEYPATH || !process.env.CAPATH) {
+  if (!process.env.CERTPATH || !process.env.KEYPATH || !process.env.CAPATH) {
     return;
   }
   const cert = await getStringFromFilePath(process.env.CERTPATH);

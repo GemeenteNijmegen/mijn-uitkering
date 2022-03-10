@@ -36,11 +36,11 @@ export class ApiStack extends Stack {
 
   /**
    * Create a cloudfront distribution for the application
-   * 
-   * Do not forward the Host header to API Gateway. This results in 
+   *
+   * Do not forward the Host header to API Gateway. This results in
    * an HTTP 403 because API Gateway won't be able to find an endpoint
    * on the cloudfront domain.
-   * 
+   *
    * @param {string} apiGatewayDomain the domain the api gateway can be reached at
    * @returns {string} the base url for the cloudfront distribution
    */
@@ -142,7 +142,7 @@ export class ApiStack extends Stack {
       tablePermissions: 'ReadWrite',
       applicationUrlBase: baseUrl,
       environment: {
-        CLIENT_SECRET_ARN: oidcSecret.secretArn
+        CLIENT_SECRET_ARN: oidcSecret.secretArn,
       },
     });
     oidcSecret.grantRead(authFunction.lambda);
@@ -158,8 +158,8 @@ export class ApiStack extends Stack {
         MTLS_PRIVATE_KEY_ARN: secretMTLSPrivateKeyArn.secretArn,
         MTLS_CLIENT_CERT: SSM.StringParameter.valueForStringParameter(this, Statics.ssmMTLSClientCert),
         MTLS_ROOT_CA: SSM.StringParameter.valueForStringParameter(this, Statics.ssmMTLSRootCA),
-        UITKERING_API_URL: SSM.StringParameter.valueForStringParameter(this, Statics.ssmUitkeringsApiEndpointUrl)
-      }
+        UITKERING_API_URL: SSM.StringParameter.valueForStringParameter(this, Statics.ssmUitkeringsApiEndpointUrl),
+      },
     });
 
     this.api.addRoutes({
