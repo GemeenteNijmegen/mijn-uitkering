@@ -58,5 +58,14 @@ export abstract class Statics {
   static readonly cspRootZoneId: string = '/gemeente-nijmegen/formio/hostedzone/id';
   static readonly cspRootZoneName: string = '/gemeente-nijmegen/formFio/hostedzone/name';
 
+  
+  static subDomain(branch: string) {
+    const subdomainMap = {
+      acceptance: 'mijn-acc',
+      production: 'mijn',
+    };
+    const subdomain = subdomainMap[branch as keyof typeof subdomainMap] ?? 'mijn-dev';
+    return subdomain;
+  }
 
 }
