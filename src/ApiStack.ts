@@ -121,6 +121,21 @@ export class ApiStack extends Stack {
    * @returns {ResponseHeadersPolicy} cloudfront responseHeadersPolicy
    */
   responseHeadersPolicy() {
+    
+    const responseHeadersPolicy = new ResponseHeadersPolicy(this, 'headers', {
+      securityHeadersBehavior: {
+        contentSecurityPolicy: { contentSecurityPolicy: this.cspHeaderValue(), override: true },
+        contentTypeOptions: { override: true },
+        frameOptions: { frameOption: HeadersFrameOption.DENY, override: true },
+        referrerPolicy: { referrerPolicy: HeadersReferrerPolicy.NO_REFERRER, override: true },
+        strictTransportSecurity: { accessControlMaxAge: Duration.seconds(600), includeSubdomains: true, override: true },
+        xssProtection: { protection: true, modeBlock: true, reportUri: 'https://example.com/csp-report', override: true },
+      },
+    });
+    return responseHeadersPolicy;
+  }
+
+  cspHeaderValue() {
     const cspValues = `default-src 'self';\
     frame-ancestors 'self';\
     frame-src 'self';\
@@ -131,17 +146,7 @@ export class ApiStack extends Stack {
     img-src 'self' data: https://*.siteimproveanalytics.io;\
     object-src 'self';\
     `;
-    const responseHeadersPolicy = new ResponseHeadersPolicy(this, 'headers', {
-      securityHeadersBehavior: {
-        contentSecurityPolicy: { contentSecurityPolicy: cspValues, override: true },
-        contentTypeOptions: { override: true },
-        frameOptions: { frameOption: HeadersFrameOption.DENY, override: true },
-        referrerPolicy: { referrerPolicy: HeadersReferrerPolicy.NO_REFERRER, override: true },
-        strictTransportSecurity: { accessControlMaxAge: Duration.seconds(600), includeSubdomains: true, override: true },
-        xssProtection: { protection: true, modeBlock: true, reportUri: 'https://example.com/csp-report', override: true },
-      },
-    });
-    return responseHeadersPolicy;
+    return cspValues.replace(/[ ]+/g, ' ').trim();
   }
 
   /**
