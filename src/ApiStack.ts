@@ -14,7 +14,8 @@ import {
   OriginRequestHeaderBehavior, 
   CacheCookieBehavior, 
   CacheHeaderBehavior, 
-  CacheQueryStringBehavior 
+  CacheQueryStringBehavior, 
+  SecurityPolicyProtocol
 } from 'aws-cdk-lib/aws-cloudfront';
 import { HttpOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
@@ -87,8 +88,10 @@ export class ApiStack extends Stack {
           minTtl: Duration.seconds(0),
           maxTtl: Duration.seconds(1)
         }),
+        responseHeadersPolicy: this.responseHeadersPolicy()
       },
       logBucket: this.logBucket(),
+      minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_2_2019
     });
 
     return `https://${distribution.distributionDomainName}/`;
@@ -111,12 +114,23 @@ export class ApiStack extends Stack {
     return cfLogBucket;
   }
 
+  
+
   /**
    * Get a set of (security) response headers to inject into the response
    * @returns {ResponseHeadersPolicy} cloudfront responseHeadersPolicy
    */
   responseHeadersPolicy() {
-    const cspValues = "default-src 'self';";
+    const cspValues = `default-src 'self';\
+    frame-ancestors 'self';\
+    frame-src 'self';\
+    connect-src 'self' https://componenten.nijmegen.nl;\
+    style-src 'self' https://componenten.nijmegen.nl https://fonts.googleapis.com https://fonts.gstatic.com;\
+    script-src 'self' https://componenten.nijmegen.nl https://siteimproveanalytics.com;\
+    font-src 'self' https://componenten.nijmegen.nl https://fonts.gstatic.com;\
+    img-src 'self' data: https://*.siteimproveanalytics.io;\
+    object-src 'self';\
+    `;
     const responseHeadersPolicy = new ResponseHeadersPolicy(this, 'headers', {
       securityHeadersBehavior: {
         contentSecurityPolicy: { contentSecurityPolicy: cspValues, override: true },
