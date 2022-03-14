@@ -3,11 +3,11 @@ import { Construct } from 'constructs';
 import { Statics } from './statics';
 
 export interface CertificateStackProps extends StackProps {
-  branch: string
+  branch: string;
 }
 
 export class CertificateStack extends Stack {
-  certificate: CertificateManager.Certificate
+  certificate: CertificateManager.Certificate;
   constructor(scope: Construct, id: string, props: CertificateStackProps) {
     super(scope, id);
     const subdomain = Statics.subDomain(props.branch);

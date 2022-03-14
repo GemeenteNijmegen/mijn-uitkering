@@ -28,7 +28,7 @@ import { Statics } from './statics';
 export interface ApiStackProps extends StackProps {
   sessionsTable: SessionsTable;
   certificateArn: string;
-  branch: string
+  branch: string;
 }
 
 /**
@@ -128,7 +128,7 @@ export class ApiStack extends Stack {
    * @returns {ResponseHeadersPolicy} cloudfront responseHeadersPolicy
    */
   responseHeadersPolicy() {
-    
+
     const responseHeadersPolicy = new ResponseHeadersPolicy(this, 'headers', {
       securityHeadersBehavior: {
         contentSecurityPolicy: { contentSecurityPolicy: this.cspHeaderValue(), override: true },
@@ -142,17 +142,17 @@ export class ApiStack extends Stack {
   }
 
   cspHeaderValue() {
-    const cspValues = `default-src 'self';\
-    frame-ancestors 'self';\
-    frame-src 'self';\
-    connect-src 'self' https://componenten.nijmegen.nl;\
-    style-src 'self' https://componenten.nijmegen.nl https://fonts.googleapis.com https://fonts.gstatic.com \
-    'sha256-hS1LM/30PjUBJK3kBX9Vm9eOAhQNCiNhf/SCDnUqu14=' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' 'sha256-OTeu7NEHDo6qutIWo0F2TmYrDhsKWCzrUgGoxxHGJ8o=';\
-    script-src 'self' https://componenten.nijmegen.nl https://siteimproveanalytics.com;\
-    font-src 'self' https://componenten.nijmegen.nl https://fonts.gstatic.com;\
-    img-src 'self' https://componenten.nijmegen.nl data: https://*.siteimproveanalytics.io;\
-    object-src 'self';\
-    `;
+    const cspValues = 'default-src \'self\';\
+    frame-ancestors \'self\';\
+    frame-src \'self\';\
+    connect-src \'self\' https://componenten.nijmegen.nl;\
+    style-src \'self\' https://componenten.nijmegen.nl https://fonts.googleapis.com https://fonts.gstatic.com \
+    \'sha256-hS1LM/30PjUBJK3kBX9Vm9eOAhQNCiNhf/SCDnUqu14=\' \'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=\' \'sha256-OTeu7NEHDo6qutIWo0F2TmYrDhsKWCzrUgGoxxHGJ8o=\';\
+    script-src \'self\' https://componenten.nijmegen.nl https://siteimproveanalytics.com;\
+    font-src \'self\' https://componenten.nijmegen.nl https://fonts.gstatic.com;\
+    img-src \'self\' https://componenten.nijmegen.nl data: https://*.siteimproveanalytics.io;\
+    object-src \'self\';\
+    ';
     return cspValues.replace(/[ ]+/g, ' ').trim();
   }
 

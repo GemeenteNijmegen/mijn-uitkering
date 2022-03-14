@@ -8,8 +8,8 @@ export interface DNSStackProps extends StackProps {
 }
 
 export class DNSStack extends Stack {
-  cspRootZone: Route53.IHostedZone
-  branch: string
+  cspRootZone: Route53.IHostedZone;
+  branch: string;
 
   constructor(scope: Construct, id: string, props: DNSStackProps) {
     super(scope, id);
@@ -33,7 +33,7 @@ export class DNSStack extends Stack {
    * ownership.
    */
   addDomainValidationRecord() {
-    
+
     //accp
     new Route53.CnameRecord(this, 'validation-record-accp', {
       zone: this.cspRootZone,
