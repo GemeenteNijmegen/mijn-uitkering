@@ -6,6 +6,7 @@ import { ParameterStack } from '../src/ParameterStage';
 import { PipelineStackDevelopment } from '../src/PipelineStackDevelopment';
 import { SessionsStack } from '../src/SessionsStack';
 import { DNSStack } from '../src/DNSStack';
+import { KeyStack } from '../src/keystack';
 
 beforeAll(() => {
   Dotenv.config();
@@ -42,10 +43,11 @@ test('StackHasSessionsTable', () => {
 
 test('StackHasApiGateway', () => {
   const app = new App();
-  const sessionsStack = new SessionsStack(app, 'sessions');
+  const keystack = new KeyStack(app, 'keystack');
+  const sessionsStack = new SessionsStack(app, 'sessions', { key: keystack.key });
   new DNSStack(app, 'dns', { branch: 'dev'});
   // const zone = dnsStack.zone;
-  const stack = new ApiStack(app, 'api', { sessionsTable: sessionsStack.sessionsTable, branch: 'dev', certificateArn: 'arn:123:456:us-east-1:123:123' });
+  const stack = new ApiStack(app, 'api', { sessionsTable: sessionsStack.sessionsTable, branch: 'dev', certificateArn: 'arn:123:456:us-east-1:123:123', logKey: keystack.logKey });
   const template = Template.fromStack(stack);
   template.resourceCountIs('AWS::ApiGatewayV2::Api', 1);
 });
@@ -53,10 +55,11 @@ test('StackHasApiGateway', () => {
 
 test('StackHasLambdas', () => {
   const app = new App();
-  const sessionsStack = new SessionsStack(app, 'sessions');
+  const keystack = new KeyStack(app, 'keystack');
+  const sessionsStack = new SessionsStack(app, 'sessions', { key: keystack.key });
   new DNSStack(app, 'dns', { branch: 'dev'});
   // const zone = dnsStack.zone;
-  const stack = new ApiStack(app, 'api', { sessionsTable: sessionsStack.sessionsTable, branch: 'dev', certificateArn: 'arn:123:456:us-east-1:123:123' });
+  const stack = new ApiStack(app, 'api', { sessionsTable: sessionsStack.sessionsTable, branch: 'dev', certificateArn: 'arn:123:456:us-east-1:123:123', logKey: keystack.logKey });
   const template = Template.fromStack(stack);
   template.resourceCountIs('AWS::Lambda::Function', 4);
 });

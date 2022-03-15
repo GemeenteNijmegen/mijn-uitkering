@@ -1,6 +1,16 @@
 import * as apigatewayv2 from '@aws-cdk/aws-apigatewayv2-alpha';
 import { HttpLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
-import { aws_secretsmanager, Stack, StackProps, Duration, aws_ssm as SSM, aws_certificatemanager as CertificateManager, aws_route53 as Route53, aws_route53_targets as Route53Targets } from 'aws-cdk-lib';
+import { 
+  aws_secretsmanager,
+  Stack,
+  StackProps,
+  Duration,
+  aws_kms as KMS,
+  aws_ssm as SSM,
+  aws_certificatemanager as CertificateManager,
+  aws_route53 as Route53,
+  aws_route53_targets as Route53Targets 
+} from 'aws-cdk-lib';
 import {
   Distribution,
   PriceClass,
@@ -19,7 +29,6 @@ import {
 } from 'aws-cdk-lib/aws-cloudfront';
 import { HttpOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
-// import { HostedZone } from 'aws-cdk-lib/aws-route53';
 import { Bucket, BlockPublicAccess, BucketEncryption } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 import { ApiFunction } from './ApiFunction';
@@ -30,7 +39,7 @@ export interface ApiStackProps extends StackProps {
   sessionsTable: SessionsTable;
   certificateArn: string;
   branch: string;
-  // zone: HostedZone;
+  logKey: KMS.Key;
 }
 
 /**
@@ -54,7 +63,7 @@ export class ApiStack extends Stack {
     const subdomain = Statics.subDomain(props.branch);
     const cspDomain = `${subdomain}.csp-nijmegen.nl`;
     domains = [cspDomain];
-    const cloudfrontDistribution = this.setCloudfrontStack(apiHost, domains, props.certificateArn);
+    const cloudfrontDistribution = this.setCloudfrontStack(apiHost, domains, props.certificateArn, props.logKey);
     this.addDnsRecords(cloudfrontDistribution);
     this.setFunctions(`https://${cspDomain}/`);
   }
@@ -69,7 +78,7 @@ export class ApiStack extends Stack {
    * @param {string} apiGatewayDomain the domain the api gateway can be reached at
    * @returns {Distribution} the cloudfront distribution
    */
-  setCloudfrontStack(apiGatewayDomain: string, domainNames?: string[], certificateArn?: string): Distribution {
+  setCloudfrontStack(apiGatewayDomain: string, domainNames: string[], certificateArn: string, logKey: KMS.Key): Distribution {
     const certificate = (certificateArn) ? CertificateManager.Certificate.fromCertificateArn(this, 'certificate', certificateArn) : undefined;
     const distribution = new Distribution(this, 'cf-distribution', {
       priceClass: PriceClass.PRICE_CLASS_100,
@@ -102,7 +111,7 @@ export class ApiStack extends Stack {
         }),
         responseHeadersPolicy: this.responseHeadersPolicy(),
       },
-      logBucket: this.logBucket(),
+      logBucket: this.logBucket(logKey),
       minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_2_2019,
     });
     return distribution;
@@ -130,10 +139,11 @@ export class ApiStack extends Stack {
   /**
    * bucket voor cloudfront logs
    */
-  logBucket() {
+  logBucket(key: KMS.Key) {
     const cfLogBucket = new Bucket(this, 'CloudfrontLogs', {
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
-      encryption: BucketEncryption.S3_MANAGED,
+      encryption: BucketEncryption.KMS,
+      encryptionKey: key,
       lifecycleRules: [
         {
           id: 'delete objects after 180 days',
