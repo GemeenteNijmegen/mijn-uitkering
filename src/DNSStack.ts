@@ -51,15 +51,15 @@ export class DNSStack extends Stack {
    * Add the Name servers from the newly defined zone to
    * the root zone for csp-nijmegen.nl. This will only
    * have an actual effect in the prod. account.
-   * 
+   *
    * @returns null
    */
   addNSToRootCSPzone() {
-    if(!this.zone.hostedZoneNameServers) { return; }
+    if (!this.zone.hostedZoneNameServers) { return; }
     new Route53.NsRecord(this, 'ns-record', {
       zone: this.cspRootZone,
       values: this.zone.hostedZoneNameServers,
-      recordName: `mijn`
+      recordName: 'mijn',
     });
   }
 

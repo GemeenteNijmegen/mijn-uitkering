@@ -108,7 +108,7 @@ export class ApiStack extends Stack {
     });
     return distribution;
   }
-  
+
   addDnsRecords(distribution: Distribution) {
     const zoneId = SSM.StringParameter.valueForStringParameter(this, Statics.ssmZoneId);
     const zoneName = SSM.StringParameter.valueForStringParameter(this, Statics.ssmZoneName);
