@@ -1,4 +1,5 @@
 import * as apigatewayv2 from '@aws-cdk/aws-apigatewayv2-alpha';
+import { HttpRouteKey } from '@aws-cdk/aws-apigatewayv2-alpha';
 import { HttpLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
 import { aws_secretsmanager, Stack, StackProps, aws_ssm as SSM } from 'aws-cdk-lib';
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
@@ -9,18 +10,18 @@ import { Statics } from './statics';
 
 export interface UitkeringsApiStackProps extends StackProps {
   sessionsTable: SessionsTable;
-  gateway: apigatewayv2.HttpApi;
   branch: string;
 }
 
 export class UitkeringsApiStack extends Stack {
   private sessionsTable: Table;
-  private api: apigatewayv2.HttpApi;
+  private api: apigatewayv2.IHttpApi;
 
   constructor(scope: Construct, id: string, props: UitkeringsApiStackProps) {
     super(scope, id);
     this.sessionsTable = props.sessionsTable.table;
-    this.api = props.gateway;
+    const apiGatewayId = SSM.StringParameter.fromStringParameterName(this, 'tlskey', Statics.ssmApiGatewayId)
+    this.api = apigatewayv2.HttpApi.fromHttpApiAttributes(this, 'apigateway', { httpApiId: apiGatewayId.stringValue });
     const subdomain = Statics.subDomain(props.branch);
     const cspDomain = `${subdomain}.csp-nijmegen.nl`;
     this.setFunctions(`https://${cspDomain}/`);
@@ -54,11 +55,11 @@ export class UitkeringsApiStack extends Stack {
     secretMTLSPrivateKey.grantRead(uitkeringenFunction.lambda);
     tlskeyParam.grantRead(uitkeringenFunction.lambda);
     tlsRootCAParam.grantRead(uitkeringenFunction.lambda);
-
-    this.api.addRoutes({
+    
+    new apigatewayv2.HttpRoute(this, 'uitkeringen-route', {
+      httpApi: this.api,
       integration: new HttpLambdaIntegration('uitkeringen', uitkeringenFunction.lambda),
-      path: '/uitkeringen',
-      methods: [apigatewayv2.HttpMethod.GET],
+      routeKey: HttpRouteKey.with('/uitkeringen', apigatewayv2.HttpMethod.GET)
     });
   }
 }
