@@ -1,12 +1,11 @@
-import { Construct } from 'constructs';
-import { 
-     Stack,
-     StackProps,
-     Duration,
-     aws_certificatemanager as CertificateManager,
-     aws_route53 as Route53,
-     aws_route53_targets as Route53Targets,
-    aws_ssm as SSM
+import {
+  Stack,
+  StackProps,
+  Duration,
+  aws_certificatemanager as CertificateManager,
+  aws_route53 as Route53,
+  aws_route53_targets as Route53Targets,
+  aws_ssm as SSM,
 } from 'aws-cdk-lib';
 import {
   Distribution,
@@ -24,23 +23,24 @@ import {
   CacheQueryStringBehavior,
   SecurityPolicyProtocol,
 } from 'aws-cdk-lib/aws-cloudfront';
-import { Bucket, BlockPublicAccess, BucketEncryption } from 'aws-cdk-lib/aws-s3';
-import { Statics } from './statics';
 import { HttpOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
+import { Bucket, BlockPublicAccess, BucketEncryption } from 'aws-cdk-lib/aws-s3';
+import { Construct } from 'constructs';
+import { Statics } from './statics';
 
 export interface CloudFrontStackProps extends StackProps {
-    /**
+  /**
      * ARN for the TLS certificate
      */
-    certificateArn: string;
-    /**
+  certificateArn: string;
+  /**
      * Domain for the default origin (HTTPorigin)
      */
-    hostDomain: string;
-    /**
+  hostDomain: string;
+  /**
      * current branch: Determines subdomain of csp-nijmegen.nl
      */
-    branch: string;
+  branch: string;
 }
 
 export class CloudfrontStack extends Stack {
@@ -64,7 +64,7 @@ export class CloudfrontStack extends Stack {
    * @param {string} apiGatewayDomain the domain the api gateway can be reached at
    * @returns {Distribution} the cloudfront distribution
    */
-   setCloudfrontStack(apiGatewayDomain: string, domainNames?: string[], certificateArn?: string): Distribution {
+  setCloudfrontStack(apiGatewayDomain: string, domainNames?: string[], certificateArn?: string): Distribution {
     const certificate = (certificateArn) ? CertificateManager.Certificate.fromCertificateArn(this, 'certificate', certificateArn) : undefined;
     const distribution = new Distribution(this, 'cf-distribution', {
       priceClass: PriceClass.PRICE_CLASS_100,

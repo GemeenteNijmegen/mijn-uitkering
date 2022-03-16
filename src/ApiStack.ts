@@ -36,7 +36,7 @@ export class ApiStack extends Stack {
     this.setFunctions(`https://${cspDomain}/`);
   }
 
-  
+
   /**
    * Create and configure lambda's for all api routes, and
    * add routes to the gateway.
@@ -73,14 +73,15 @@ export class ApiStack extends Stack {
     oidcSecret.grantRead(authFunction.lambda);
 
     const secretMTLSPrivateKey = aws_secretsmanager.Secret.fromSecretNameV2(this, 'tls-key-secret', Statics.secretMTLSPrivateKey);
-    const tlskeyParam = SSM.StringParameter.fromStringParameterName(this, 'tlskey', Statics.ssmMTLSClientCert)
-    const tlsRootCAParam = SSM.StringParameter.fromStringParameterName(this, 'tlsrootca', Statics.ssmMTLSRootCA)
+    const tlskeyParam = SSM.StringParameter.fromStringParameterName(this, 'tlskey', Statics.ssmMTLSClientCert);
+    const tlsRootCAParam = SSM.StringParameter.fromStringParameterName(this, 'tlsrootca', Statics.ssmMTLSRootCA);
     const homeFunction = new ApiFunction(this, 'home-function', {
       description: 'Home-lambda voor de Mijn Uitkering-applicatie.',
       codePath: 'app/home',
       table: this.sessionsTable,
       tablePermissions: 'ReadWrite',
-      applicationUrlBase: baseUrl, environment: {
+      applicationUrlBase: baseUrl,
+      environment: {
         MTLS_PRIVATE_KEY_ARN: secretMTLSPrivateKey.secretArn,
         MTLS_CLIENT_CERT_NAME: Statics.ssmMTLSClientCert,
         MTLS_ROOT_CA_NAME: Statics.ssmMTLSRootCA,

@@ -29,7 +29,7 @@ export class ApiStage extends Stage {
     new CloudfrontStack(this, 'cloudfront-stack', {
       branch: props.branch,
       certificateArn: certificate.certificateArn,
-      hostDomain: apistack.domain()
-    })
+      hostDomain: apistack.domain(),
+    });
   }
 }
