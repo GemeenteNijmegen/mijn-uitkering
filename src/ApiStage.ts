@@ -17,10 +17,14 @@ export class ApiStage extends Stage {
   constructor(scope: Construct, id: string, props: ApiStageProps) {
     super(scope, id, props);
     const sessionsStack = new SessionsStack(this, 'sessions-stack');
-    const dnsStack = new DNSStack(this, 'dns-stack', { branch: props.branch });
-    const certificateStack = new CertificateStack(this, 'cert-stack', { branch: props.branch });
-    const certificate = certificateStack.createCertificate(dnsStack.zone);
-    certificateStack.addDependency(dnsStack);
+    let certificateArn;
+    if(props.branch !== 'development') {
+      const dnsStack = new DNSStack(this, 'dns-stack', { branch: props.branch });
+      const certificateStack = new CertificateStack(this, 'cert-stack', { branch: props.branch });
+      const certificate = certificateStack.createCertificate(dnsStack.zone);
+      certificateArn = certificate.certificateArn;
+      certificateStack.addDependency(dnsStack);
+    }
     const apistack = new ApiStack(this, 'api-stack', {
       branch: props.branch,
       sessionsTable: sessionsStack.sessionsTable,
@@ -28,7 +32,7 @@ export class ApiStage extends Stage {
 
     new CloudfrontStack(this, 'cloudfront-stack', {
       branch: props.branch,
-      certificateArn: certificate.certificateArn,
+      certificateArn: certificateArn,
       hostDomain: apistack.domain(),
     });
   }

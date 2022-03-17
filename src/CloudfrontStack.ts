@@ -32,7 +32,7 @@ export interface CloudFrontStackProps extends StackProps {
   /**
      * ARN for the TLS certificate
      */
-  certificateArn: string;
+  certificateArn?: string;
   /**
      * Domain for the default origin (HTTPorigin)
      */
@@ -65,7 +65,13 @@ export class CloudfrontStack extends Stack {
    * @returns {Distribution} the cloudfront distribution
    */
   setCloudfrontStack(apiGatewayDomain: string, domainNames?: string[], certificateArn?: string): Distribution {
-    const certificate = (certificateArn) ? CertificateManager.Certificate.fromCertificateArn(this, 'certificate', certificateArn) : undefined;
+    let certificate;
+    if(certificateArn) {
+      certificate = CertificateManager.Certificate.fromCertificateArn(this, 'certificate', certificateArn);
+    } else {
+      certificate = undefined;
+      domainNames = undefined;
+    }
     const distribution = new Distribution(this, 'cf-distribution', {
       priceClass: PriceClass.PRICE_CLASS_100,
       domainNames,
