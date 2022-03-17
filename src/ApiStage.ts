@@ -25,7 +25,7 @@ export class ApiStage extends Stage {
       branch: props.branch,
       sessionsTable: sessionsStack.sessionsTable,
     });
-    
+
     new CloudfrontStack(this, 'cloudfront-stack', {
       branch: props.branch,
       certificateArn: certificate.certificateArn,

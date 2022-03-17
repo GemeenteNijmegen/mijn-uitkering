@@ -65,7 +65,7 @@ export abstract class Statics {
    */
   static readonly ssmZoneId: string = '/cdk/mijn-uitkering/zone-id';
   static readonly ssmZoneName: string = '/cdk/mijn-uitkering/zone-name';
-  
+
   static readonly ssmApiGatewayId: string = '/cdk/mijn-uitkering/apigateway-id';
 
   static readonly ssmSessionsTableArn: string = '/cdk/mijn-uitkering/sessionstable-arn';

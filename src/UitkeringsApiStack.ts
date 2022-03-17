@@ -17,7 +17,7 @@ export class UitkeringsApiStack extends Stack {
 
   constructor(scope: Construct, id: string, props: UitkeringsApiStackProps) {
     super(scope, id);
-    
+
     const sessionsTableArn = SSM.StringParameter.fromStringParameterName(this, 'sessions-table-arn', Statics.ssmSessionsTableArn).stringValue;
     this.sessionsTable = Table.fromTableArn(this, 'sessions-table', sessionsTableArn);
 
@@ -38,7 +38,7 @@ export class UitkeringsApiStack extends Stack {
     const secretMTLSPrivateKey = aws_secretsmanager.Secret.fromSecretNameV2(this, 'tls-key-secret', Statics.secretMTLSPrivateKey);
     const tlskeyParam = SSM.StringParameter.fromStringParameterName(this, 'tlskey', Statics.ssmMTLSClientCert);
     const tlsRootCAParam = SSM.StringParameter.fromStringParameterName(this, 'tlsrootca', Statics.ssmMTLSRootCA);
-    
+
     const uitkeringenFunction = new ApiFunction(this, 'uitkeringen-function', {
       description: 'Uitkeringen-lambda voor de Mijn Uitkering-applicatie.',
       codePath: 'app/uitkeringen',

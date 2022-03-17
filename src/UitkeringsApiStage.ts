@@ -14,7 +14,7 @@ export class UitkeringsApiStage extends Stage {
     super(scope, id, props);
 
     new UitkeringsApiStack(this, 'uitkerings-api', {
-      branch: props.branch
+      branch: props.branch,
     });
   }
 }
