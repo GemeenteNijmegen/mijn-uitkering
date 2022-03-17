@@ -51,7 +51,9 @@ export class CloudfrontStack extends Stack {
     const cspDomain = `${subdomain}.csp-nijmegen.nl`;
     domains = [cspDomain];
     const cloudfrontDistribution = this.setCloudfrontStack(props.hostDomain, domains, props.certificateArn);
-    this.addDnsRecords(cloudfrontDistribution);
+    if(props.certificateArn) {
+      this.addDnsRecords(cloudfrontDistribution);
+    }
   }
 
   /**
