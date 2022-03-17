@@ -2,24 +2,25 @@ import * as apigatewayv2 from '@aws-cdk/aws-apigatewayv2-alpha';
 import { HttpRouteKey } from '@aws-cdk/aws-apigatewayv2-alpha';
 import { HttpLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
 import { aws_secretsmanager, Stack, StackProps, aws_ssm as SSM } from 'aws-cdk-lib';
-import { Table } from 'aws-cdk-lib/aws-dynamodb';
+import { ITable, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { Construct } from 'constructs';
 import { ApiFunction } from './ApiFunction';
-import { SessionsTable } from './SessionsTable';
 import { Statics } from './statics';
 
 export interface UitkeringsApiStackProps extends StackProps {
-  sessionsTable: SessionsTable;
   branch: string;
 }
 
 export class UitkeringsApiStack extends Stack {
-  private sessionsTable: Table;
+  private sessionsTable: ITable;
   private api: apigatewayv2.IHttpApi;
 
   constructor(scope: Construct, id: string, props: UitkeringsApiStackProps) {
     super(scope, id);
-    this.sessionsTable = props.sessionsTable.table;
+    
+    const sessionsTableArn = SSM.StringParameter.fromStringParameterName(this, 'sessions-table-arn', Statics.ssmSessionsTableArn).stringValue;
+    this.sessionsTable = Table.fromTableArn(this, 'sessions-table', sessionsTableArn);
+
     const apiGatewayId = SSM.StringParameter.fromStringParameterName(this, 'gatewayid', Statics.ssmApiGatewayId);
     this.api = apigatewayv2.HttpApi.fromHttpApiAttributes(this, 'apigateway', { httpApiId: apiGatewayId.stringValue });
     const subdomain = Statics.subDomain(props.branch);
@@ -37,7 +38,7 @@ export class UitkeringsApiStack extends Stack {
     const secretMTLSPrivateKey = aws_secretsmanager.Secret.fromSecretNameV2(this, 'tls-key-secret', Statics.secretMTLSPrivateKey);
     const tlskeyParam = SSM.StringParameter.fromStringParameterName(this, 'tlskey', Statics.ssmMTLSClientCert);
     const tlsRootCAParam = SSM.StringParameter.fromStringParameterName(this, 'tlsrootca', Statics.ssmMTLSRootCA);
-
+    
     const uitkeringenFunction = new ApiFunction(this, 'uitkeringen-function', {
       description: 'Uitkeringen-lambda voor de Mijn Uitkering-applicatie.',
       codePath: 'app/uitkeringen',

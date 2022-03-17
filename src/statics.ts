@@ -68,6 +68,8 @@ export abstract class Statics {
   
   static readonly ssmApiGatewayId: string = '/cdk/mijn-uitkering/apigateway-id';
 
+  static readonly ssmSessionsTableArn: string = '/cdk/mijn-uitkering/sessionstable-arn';
+
   static subDomain(branch: string) {
     const subdomainMap = {
       acceptance: 'mijn.accp',

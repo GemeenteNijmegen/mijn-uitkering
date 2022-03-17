@@ -5,7 +5,6 @@ import { CertificateStack } from './CertificateStack';
 import { CloudfrontStack } from './CloudfrontStack';
 import { DNSStack } from './DNSStack';
 import { SessionsStack } from './SessionsStack';
-import { UitkeringsApiStack } from './UitkeringsApiStack';
 
 export interface ApiStageProps extends StageProps {
   branch: string;
@@ -26,12 +25,7 @@ export class ApiStage extends Stage {
       branch: props.branch,
       sessionsTable: sessionsStack.sessionsTable,
     });
-
-    new UitkeringsApiStack(this, 'uitkerings-api', {
-      branch: props.branch,
-      sessionsTable: sessionsStack.sessionsTable,
-    });
-
+    
     new CloudfrontStack(this, 'cloudfront-stack', {
       branch: props.branch,
       certificateArn: certificate.certificateArn,
