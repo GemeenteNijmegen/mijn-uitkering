@@ -1,5 +1,5 @@
 {
-  "name": "mijnnijmegen",
+  "name": "mijnuitkering",
   "scripts": {
     "build": "npx projen build",
     "bundle": "npx projen bundle",
@@ -11,10 +11,6 @@
     "diff": "npx projen diff",
     "eject": "npx projen eject",
     "eslint": "npx projen eslint",
-    "install:auth": "npx projen install:auth",
-    "install:home": "npx projen install:home",
-    "install:login": "npx projen install:login",
-    "install:logout": "npx projen install:logout",
     "install:uitkeringen": "npx projen install:uitkeringen",
     "package": "npx projen package",
     "post-compile": "npx projen post-compile",
@@ -36,7 +32,7 @@
     "@types/node": "^12",
     "@typescript-eslint/eslint-plugin": "^5",
     "@typescript-eslint/parser": "^5",
-    "aws-cdk": "2.7.0",
+    "aws-cdk": "2.17.0",
     "copyfiles": "^2.4.1",
     "esbuild": "^0.14.27",
     "eslint": "^8",
@@ -56,7 +52,7 @@
     "@aws-cdk/aws-apigatewayv2-alpha": "^2.17.0-alpha.0",
     "@aws-cdk/aws-apigatewayv2-integrations-alpha": "^2.17.0-alpha.0",
     "@aws-solutions-constructs/aws-lambda-dynamodb": "2.0.0",
-    "aws-cdk-lib": "2.7.0",
+    "aws-cdk-lib": "2.17.0",
     "constructs": "^10.0.5",
     "dotenv": "^10.0.0"
   },

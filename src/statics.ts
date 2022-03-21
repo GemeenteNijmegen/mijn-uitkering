@@ -2,28 +2,31 @@ export abstract class Statics {
   static readonly projectName: string = 'mijn-uitkering';
 
   /**
+   * Imported arns from Mijn Nijmegen
+   */
+   static readonly ssmApiGatewayId: string = '/cdk/mijn-nijmegen/apigateway-id';
+   static readonly ssmSessionsTableArn: string = '/cdk/mijn-nijmegen/sessionstable-arn';
+   
+  /**
    * Certificate private key for mTLS
    */
-  static readonly secretMTLSPrivateKey: string = '/cdk/mijn-nijmegen/mtls-privatekey';
+  static readonly secretMTLSPrivateKey: string = '/cdk/mijn-uitkering/mtls-privatekey';
 
   /**
    * Certificate for mTLS
    */
-  static readonly ssmMTLSClientCert: string = '/cdk/mijn-nijmegen/mtls-clientcert';
+  static readonly ssmMTLSClientCert: string = '/cdk/mijn-uitkering/mtls-clientcert';
 
   /**
     * Root CA for mTLS (PKIO root)
     */
-  static readonly ssmMTLSRootCA: string = '/cdk/mijn-nijmegen/mtls-rootca';
+  static readonly ssmMTLSRootCA: string = '/cdk/mijn-uitkering/mtls-rootca';
 
   /**
    * BRP API endpoint
    */
-  static readonly ssmBrpApiEndpointUrl: string = '/cdk/mijn-nijmegen/brp-api-url';
+  static readonly ssmBrpApiEndpointUrl: string = '/cdk/mijn-uitkering/brp-api-url';
 
-  static readonly ssmApiGatewayId: string = '/cdk/mijn-nijmegen/apigateway-id';
-
-  static readonly ssmSessionsTableArn: string = '/cdk/mijn-nijmegen/sessionstable-arn';
 
   /**
    * Uitkeringsgegevens API endpoint
