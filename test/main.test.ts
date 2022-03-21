@@ -26,10 +26,7 @@ test('MainPipelineExists', () => {
 
 test('StackHasLambdas', () => {
   const app = new App();
-  const sessionsStack = new SessionsStack(app, 'sessions');
-  new DNSStack(app, 'dns', { branch: 'dev'});
-  // const zone = dnsStack.zone;
-  const stack = new UitkeringsApiStack(app, 'api', { branch: 'dev' });
+  const stack = new UitkeringsApiStack(app, 'api');
   const template = Template.fromStack(stack);
   template.resourceCountIs('AWS::Lambda::Function', 1);
 });
