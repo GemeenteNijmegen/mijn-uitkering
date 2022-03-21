@@ -19,6 +19,7 @@ export class UitkeringsApiStack extends Stack {
 
     const apiGatewayId = SSM.StringParameter.fromStringParameterName(this, 'gatewayid', Statics.ssmApiGatewayId);
     this.api = apigatewayv2.HttpApi.fromHttpApiAttributes(this, 'apigateway', { httpApiId: apiGatewayId.stringValue });
+    this.setFunctions();
   }
 
   /**
