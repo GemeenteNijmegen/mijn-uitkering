@@ -1,7 +1,6 @@
 import * as path from 'path';
-import { aws_lambda as Lambda, aws_dynamodb, aws_ssm as SSM } from 'aws-cdk-lib';
+import { aws_lambda as Lambda, aws_dynamodb } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { Statics } from './statics';
 
 export interface ApiFunctionProps {
   description: string;

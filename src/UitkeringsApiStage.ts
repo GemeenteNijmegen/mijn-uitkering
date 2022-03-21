@@ -13,8 +13,6 @@ export class UitkeringsApiStage extends Stage {
   constructor(scope: Construct, id: string, props: UitkeringsApiStageProps) {
     super(scope, id, props);
 
-    new UitkeringsApiStack(this, 'uitkerings-api', {
-      branch: props.branch,
-    });
+    new UitkeringsApiStack(this, 'uitkerings-api');
   }
 }

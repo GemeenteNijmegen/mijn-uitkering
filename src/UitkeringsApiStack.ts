@@ -1,21 +1,17 @@
 import * as apigatewayv2 from '@aws-cdk/aws-apigatewayv2-alpha';
 import { HttpRouteKey } from '@aws-cdk/aws-apigatewayv2-alpha';
 import { HttpLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
-import { aws_secretsmanager, Stack, StackProps, aws_ssm as SSM } from 'aws-cdk-lib';
+import { aws_secretsmanager, Stack, aws_ssm as SSM } from 'aws-cdk-lib';
 import { ITable, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { Construct } from 'constructs';
 import { ApiFunction } from './ApiFunction';
 import { Statics } from './statics';
 
-export interface UitkeringsApiStackProps extends StackProps {
-  branch: string;
-}
-
 export class UitkeringsApiStack extends Stack {
   private sessionsTable: ITable;
   private api: apigatewayv2.IHttpApi;
 
-  constructor(scope: Construct, id: string, props: UitkeringsApiStackProps) {
+  constructor(scope: Construct, id: string) {
     super(scope, id);
 
     const sessionsTableArn = SSM.StringParameter.fromStringParameterName(this, 'sessions-table-arn', Statics.ssmSessionsTableArn).stringValue;
