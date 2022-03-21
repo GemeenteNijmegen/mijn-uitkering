@@ -43,24 +43,6 @@ export class ssmParamsConstruct extends Construct {
     Tags.of(this).add('cdkManaged', 'yes');
     Tags.of(this).add('Project', Statics.projectName);
 
-    /**
-     * authentication parameters
-     */
-    new SSM.StringParameter(this, 'ssm_auth_1', {
-      stringValue: 'https://authenticatie-accp.nijmegen.nl',
-      parameterName: Statics.ssmAuthUrlBaseParameter,
-    });
-
-    new SSM.StringParameter(this, 'ssm_auth_2', {
-      stringValue: 'AawootW574MqIMRAfAgzdv8lhQYLuGY3',
-      parameterName: Statics.ssmOIDCClientID,
-    });
-
-    new SSM.StringParameter(this, 'ssm_auth_3', {
-      stringValue: 'openid idp_scoping:simulator idp_scoping:https://was-preprod1.digid.nl/saml/idp/metadata',
-      parameterName: Statics.ssmOIDCScope,
-    });
-
     new SSM.StringParameter(this, 'ssm_uitkering_1', {
       stringValue: 'https://data-test.nijmegen.nl/mijnNijmegenData',
       parameterName: Statics.ssmUitkeringsApiEndpointUrl,
@@ -74,11 +56,6 @@ export class ssmParamsConstruct extends Construct {
     new SSM.StringParameter(this, 'ssm_uitkering_3', {
       stringValue: '-',
       parameterName: Statics.ssmMTLSRootCA,
-    });
-
-    new SecretsManager.Secret(this, 'secret_1', {
-      secretName: Statics.secretOIDCClientSecret,
-      description: 'OpenIDConnect client secret',
     });
 
     new SecretsManager.Secret(this, 'secret_2', {
