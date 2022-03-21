@@ -4,9 +4,9 @@ export abstract class Statics {
   /**
    * Imported arns from Mijn Nijmegen
    */
-   static readonly ssmApiGatewayId: string = '/cdk/mijn-nijmegen/apigateway-id';
-   static readonly ssmSessionsTableArn: string = '/cdk/mijn-nijmegen/sessionstable-arn';
-   
+  static readonly ssmApiGatewayId: string = '/cdk/mijn-nijmegen/apigateway-id';
+  static readonly ssmSessionsTableArn: string = '/cdk/mijn-nijmegen/sessionstable-arn';
+
   /**
    * Certificate private key for mTLS
    */
