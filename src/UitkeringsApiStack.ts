@@ -23,9 +23,6 @@ export class UitkeringsApiStack extends Stack {
 
     const apiGatewayId = SSM.StringParameter.fromStringParameterName(this, 'gatewayid', Statics.ssmApiGatewayId);
     this.api = apigatewayv2.HttpApi.fromHttpApiAttributes(this, 'apigateway', { httpApiId: apiGatewayId.stringValue });
-    const subdomain = Statics.subDomain(props.branch);
-    const cspDomain = `${subdomain}.csp-nijmegen.nl`;
-    this.setFunctions(`https://${cspDomain}/`);
   }
 
   /**
@@ -33,7 +30,7 @@ export class UitkeringsApiStack extends Stack {
    * add routes to the gateway.
    * @param {string} baseUrl the application url
    */
-  setFunctions(baseUrl: string) {
+  setFunctions() {
 
     const secretMTLSPrivateKey = aws_secretsmanager.Secret.fromSecretNameV2(this, 'tls-key-secret', Statics.secretMTLSPrivateKey);
     const tlskeyParam = SSM.StringParameter.fromStringParameterName(this, 'tlskey', Statics.ssmMTLSClientCert);
@@ -44,7 +41,6 @@ export class UitkeringsApiStack extends Stack {
       codePath: 'app/uitkeringen',
       table: this.sessionsTable,
       tablePermissions: 'ReadWrite',
-      applicationUrlBase: baseUrl,
       environment: {
         MTLS_PRIVATE_KEY_ARN: secretMTLSPrivateKey.secretArn,
         MTLS_CLIENT_CERT_NAME: Statics.ssmMTLSClientCert,

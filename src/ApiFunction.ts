@@ -25,10 +25,6 @@ export class ApiFunction extends Construct {
       code: Lambda.Code.fromAsset(path.join(__dirname, props.codePath)),
       insightsVersion: Lambda.LambdaInsightsVersion.fromInsightVersionArn(insightsArn),
       environment: {
-        APPLICATION_URL_BASE: props.applicationUrlBase || '',
-        AUTH_URL_BASE: SSM.StringParameter.valueForStringParameter(this, Statics.ssmAuthUrlBaseParameter),
-        OIDC_CLIENT_ID: SSM.StringParameter.valueForStringParameter(this, Statics.ssmOIDCClientID),
-        OIDC_SCOPE: SSM.StringParameter.valueForStringParameter(this, Statics.ssmOIDCScope),
         SESSION_TABLE: props.table.tableName,
         ...props.environment,
       },
