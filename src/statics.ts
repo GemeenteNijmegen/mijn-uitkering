@@ -6,6 +6,7 @@ export abstract class Statics {
    */
   static readonly ssmApiGatewayId: string = '/cdk/mijn-nijmegen/apigateway-id';
   static readonly ssmSessionsTableArn: string = '/cdk/mijn-nijmegen/sessionstable-arn';
+  static readonly ssmDataKeyArn: string = '/cdk/mijn-nijmegen/kms-datakey-arn';
 
   /**
    * Certificate private key for mTLS
