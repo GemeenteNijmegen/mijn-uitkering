@@ -1,6 +1,7 @@
 import * as path from 'path';
 import { aws_lambda as Lambda, aws_dynamodb } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
+import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 
 export interface ApiFunctionProps {
   description: string;
@@ -21,6 +22,7 @@ export class ApiFunction extends Construct {
       runtime: Lambda.Runtime.NODEJS_14_X,
       handler: 'index.handler',
       description: props.description,
+      logRetention: RetentionDays.ONE_MONTH,
       code: Lambda.Code.fromAsset(path.join(__dirname, props.codePath)),
       insightsVersion: Lambda.LambdaInsightsVersion.fromInsightVersionArn(insightsArn),
       environment: {
