@@ -18,13 +18,13 @@ export class UitkeringsApiStack extends Stack {
     const keyArn = SSM.StringParameter.fromStringParameterName(this, 'key-arn', Statics.ssmDataKeyArn).stringValue;
 
     /**
-     * Use fromTableAttributes so we can pass in the encryption key. This 
+     * Use fromTableAttributes so we can pass in the encryption key. This
      * way the table.grantReadWriteData() call actually sets the correct
      * KMS policy fields (kms:Encrypt etc.)
      */
     this.sessionsTable = Table.fromTableAttributes(this, 'sessionstable', {
       encryptionKey: aws_kms.Key.fromKeyArn(this, 'data-key', keyArn),
-      tableArn: sessionsTableArn
+      tableArn: sessionsTableArn,
     });
 
     const apiGatewayId = SSM.StringParameter.fromStringParameterName(this, 'gatewayid', Statics.ssmApiGatewayId);
