@@ -1,7 +1,7 @@
 import * as apigatewayv2 from '@aws-cdk/aws-apigatewayv2-alpha';
 import { HttpRouteKey } from '@aws-cdk/aws-apigatewayv2-alpha';
 import { HttpLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
-import { aws_secretsmanager, Stack, aws_ssm as SSM } from 'aws-cdk-lib';
+import { aws_secretsmanager, Stack, aws_ssm as SSM, aws_kms } from 'aws-cdk-lib';
 import { ITable, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { Construct } from 'constructs';
 import { ApiFunction } from './ApiFunction';
@@ -15,7 +15,17 @@ export class UitkeringsApiStack extends Stack {
     super(scope, id);
 
     const sessionsTableArn = SSM.StringParameter.fromStringParameterName(this, 'sessions-table-arn', Statics.ssmSessionsTableArn).stringValue;
-    this.sessionsTable = Table.fromTableArn(this, 'sessions-table', sessionsTableArn);
+    const keyArn = SSM.StringParameter.fromStringParameterName(this, 'key-arn', Statics.ssmDataKeyArn).stringValue;
+
+    /**
+     * Use fromTableAttributes so we can pass in the encryption key. This
+     * way the table.grantReadWriteData() call actually sets the correct
+     * KMS policy fields (kms:Encrypt etc.)
+     */
+    this.sessionsTable = Table.fromTableAttributes(this, 'sessionstable', {
+      encryptionKey: aws_kms.Key.fromKeyArn(this, 'data-key', keyArn),
+      tableArn: sessionsTableArn,
+    });
 
     const apiGatewayId = SSM.StringParameter.fromStringParameterName(this, 'gatewayid', Statics.ssmApiGatewayId);
     this.api = apigatewayv2.HttpApi.fromHttpApiAttributes(this, 'apigateway', { httpApiId: apiGatewayId.stringValue });

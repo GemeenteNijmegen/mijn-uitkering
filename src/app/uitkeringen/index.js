@@ -37,7 +37,7 @@ async function requestHandler(cookies, client) {
     data.volledigenaam = brpData?.Persoon?.Persoonsgegevens?.Naam ? brpData.Persoon.Persoonsgegevens.Naam : 'Onbekende gebruiker';
     
     // render page
-    const html = await render(data, __dirname + '/templates/home.mustache');
+    const html = await render(data, __dirname + '/templates/uitkeringen.mustache');
     response = {
         'statusCode': 200,
         'body': html,
