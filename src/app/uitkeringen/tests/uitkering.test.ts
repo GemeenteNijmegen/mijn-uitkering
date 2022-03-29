@@ -1,110 +1,62 @@
-import fs from 'fs';
-import { ApiClient } from '../ApiClient';
+import { DynamoDBClient, GetItemCommandOutput } from '@aws-sdk/client-dynamodb';
+import { SecretsManagerClient, GetSecretValueCommandOutput } from '@aws-sdk/client-secrets-manager';
+import { mockClient } from 'jest-aws-client-mock';
 import { FileApiClient } from '../FileApiClient';
-import { UitkeringsApi } from '../UitkeringsApi';
+import * as lambda from '../index';
+
+beforeAll(() => {
+  global.console.log = jest.fn();
+  // Set env variables
+  process.env.SESSION_TABLE = 'mijnuitkering-sessions';
+  process.env.AUTH_URL_BASE = 'https://authenticatie-accp.nijmegen.nl';
+  process.env.APPLICATION_URL_BASE = 'https://testing.example.com/';
+  process.env.CLIENT_SECRET_ARN = '123';
+  process.env.OIDC_CLIENT_ID = '1234';
+  process.env.OIDC_SCOPE = 'openid';
+});
 
 
-async function getStringFromFilePath(filePath: string) {
-  return new Promise((res, rej) => {
-    fs.readFile(filePath, (err, data) => {
-      if (err) {return rej(err);}
-      return res(data.toString());
-    });
-  });
-}
+const ddbMock = mockClient(DynamoDBClient);
+const secretsMock = mockClient(SecretsManagerClient);
 
-// test('returns empty if not found', async () => {
-//   const client = new FileApiClient();
-//   let api = new UitkeringsApi(client);
-//   const result = await api.getUitkeringen('00000000');
-//   expect(result.uitkeringen).toHaveLength(0);
-// });
+beforeEach(() => {
+  ddbMock.mockReset();
+  secretsMock.mockReset();
+  const getItemOutput: Partial<GetItemCommandOutput> = {
+    Item: {
+      loggedin: {
+        BOOL: true,
+      },
+      bsn: {
+        S: '12345678',
+      },
+      state: {
+        S: '12345',
+      },
+    },
+  };
+  ddbMock.mockImplementation(() => getItemOutput);
+});
 
-// test('returns empty if no result', async () => {
-//   const client = new FileApiClient();
-//   let api = new UitkeringsApi(client);
-//   const result = await api.getUitkeringen('00000000');
-//   expect(result.uitkeringen).toHaveLength(0);
-// });
-
-test('returns one uitkering', async () => {
+test('Returns 200', async () => {
+  const output: GetSecretValueCommandOutput = {
+    $metadata: {},
+    SecretString: 'ditiseennepgeheim',
+  };
+  secretsMock.mockImplementation(() => output);
   const client = new FileApiClient();
-  let api = new UitkeringsApi(client);
-  const result = await api.getUitkeringen('00000000');
-  expect(result.uitkeringen).toHaveLength(1);
-  expect(result.uitkeringen[0].fields).toBeInstanceOf(Array);
+  const result = await lambda.requestHandler('session=12345', client);
+  expect(result.statusCode).toBe(200);
 });
 
-// test('returns two uitkeringen', async () => {
-//   const client = new FileApiClient();
-//   let api = new UitkeringsApi(client);
-//   const result = await api.getUitkeringen('00000000');
-//   expect(result.uitkeringen).toHaveLength(2);
-// });
-
-// This test doesn't run in CI by default, depends on unavailable secrets
-test('Http Api', async () => {
-  if (
-    !process.env.CERTPATH
-      || !process.env.KEYPATH
-      || !process.env.CAPATH
-      || !process.env.BSN
-      || !process.env.UITKERING_API_URL
-      || !process.env.UITKERING_BSN) {
-    console.debug('skipping live api test');
-    return;
-  }
-  const cert = await getStringFromFilePath(process.env.CERTPATH);
-  const key = await getStringFromFilePath(process.env.KEYPATH);
-  const ca = await getStringFromFilePath(process.env.CAPATH);
-  const client = new ApiClient(cert, key, ca);
-  const body = `<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-        <soap:Body>
-            <ns2:dataRequest xmlns:ns2="${process.env.UITKERING_API_URL}/">
-                <identifier>${process.env.UITKERING_BSN}</identifier>
-                <contentSource>mijnUitkering</contentSource>
-            </ns2:dataRequest>
-        </soap:Body>
-    </soap:Envelope>`;
-
-  const result = await client.requestData(process.env.UITKERING_API_URL, body, {
-    'Content-type': 'text/xml',
-    'SoapAction': process.env.UITKERING_API_URL + '/getData',
-  });
-  console.debug(result);
-  expect(result).toContain('<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">');
-});
-
-
-// This test doesn't run in CI by default, depends on unavailable secrets
-test('Http Api No result', async () => {
-  if (
-    !process.env.CERTPATH
-      || !process.env.KEYPATH
-      || !process.env.CAPATH
-      || !process.env.BSN
-      || !process.env.UITKERING_API_URL
-      || !process.env.UITKERING_BSN) {
-    console.debug('skipping live api test');
-    return;
-  }
-  const cert = await getStringFromFilePath(process.env.CERTPATH);
-  const key = await getStringFromFilePath(process.env.KEYPATH);
-  const ca = await getStringFromFilePath(process.env.CAPATH);
-  const client = new ApiClient(cert, key, ca);
-  const body = `<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-        <soap:Body>
-            <ns2:dataRequest xmlns:ns2="${process.env.UITKERING_API_URL}/">
-                <identifier>12345678</identifier>
-                <contentSource>mijnUitkering</contentSource>
-            </ns2:dataRequest>
-        </soap:Body>
-    </soap:Envelope>`;
-
-  const result = await client.requestData(process.env.UITKERING_API_URL, body, {
-    'Content-type': 'text/xml',
-    'SoapAction': process.env.UITKERING_API_URL + '/getData',
-  });
-  console.debug(result);
-  expect(result).toContain('<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">');
+test('Shows overview page', async () => {
+  const output: GetSecretValueCommandOutput = {
+    $metadata: {},
+    SecretString: 'ditiseennepgeheim',
+  };
+  secretsMock.mockImplementation(() => output);
+  const client = new FileApiClient();
+  const result = await lambda.requestHandler('session=12345', client);
+  expect(result.body).toMatch('Mijn Uitkering');
+  expect(result.body).toMatch('Participatiewet');
 });
