@@ -21,17 +21,22 @@ function parseEvent(event) {
 }
 
 async function requestHandler(cookies, client) {
+    console.time('request');
     let session = new Session(cookies);
     await session.init();
+    console.timeLog('request', 'init session');
     if(session.isLoggedIn() !== true) {
         return redirectResponse('/login');
     } 
     // Get API data
     client = client ? client : new ApiClient();
     await client.init();
+    console.timeLog('request', 'Api Client init');
     const bsn = session.getValue('bsn');
     const brpApi = new BrpApi(client);
+    console.timeLog('request', 'Brp Api');
     const uitkeringsApi = new UitkeringsApi(client);
+    console.timeLog('request', 'UitkeringsApi');
     const [data, brpData] = await Promise.all([uitkeringsApi.getUitkeringen(bsn), brpApi.getBrpData(bsn)]);
 
     data.volledigenaam = brpData?.Persoon?.Persoonsgegevens?.Naam ? brpData.Persoon.Persoonsgegevens.Naam : 'Onbekende gebruiker';
@@ -48,6 +53,7 @@ async function requestHandler(cookies, client) {
             'session='+ session.sessionId + '; HttpOnly; Secure;',
         ]
     }
+    console.timeEnd('request');
     return response;
 }
 exports.handler = async (event, context) => {
