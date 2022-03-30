@@ -55,6 +55,5 @@ test('Api', async () => {
   const client = new ApiClient(cert, key, ca);
   const api = new BrpApi(client);
   const result = await api.getBrpData(12345678);
-  console.debug(result);
   expect(result).toBe(false);
 });
