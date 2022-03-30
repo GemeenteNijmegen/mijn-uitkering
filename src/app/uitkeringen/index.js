@@ -28,7 +28,7 @@ async function requestHandler(cookies, client) {
     } 
     // Get API data
     client = client ? client : new ApiClient();
-    
+    await client.init();
     const bsn = session.getValue('bsn');
     const brpApi = new BrpApi(client);
     const uitkeringsApi = new UitkeringsApi(client);
