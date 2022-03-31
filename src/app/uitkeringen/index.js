@@ -3,30 +3,17 @@ const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const { requestHandler } = require("./requestHandler");
 
 const dynamoDBClient = new DynamoDBClient();
-exports.dynamoDBClient = dynamoDBClient;
 const apiClient = new ApiClient();
 
 async function init() {
-    return new Promise((resolve, reject) => {
-        console.time('init');
-        console.timeLog('init', 'start init');
-        apiClient.init();
-        console.timeEnd('init');
-    });
+    console.time('init');
+    console.timeLog('init', 'start init');
+    let promise = apiClient.init();
+    console.timeEnd('init');
+    return promise;
 }
 
 const initPromise = init();
-
-function redirectResponse(location, code = 302) {
-    return {
-        'statusCode': code,
-        'body': '',
-        'headers': { 
-            'Location': location
-        }
-    }
-}
-exports.redirectResponse = redirectResponse;
 
 function parseEvent(event) {
     return { 
@@ -38,6 +25,7 @@ exports.handler = async (event, context) => {
     try {
         const params = parseEvent(event);
         await initPromise;
+        console.log(apiClient, dynamoDBClient);
         return await requestHandler(params.cookies, apiClient, dynamoDBClient);
     
     } catch (err) {

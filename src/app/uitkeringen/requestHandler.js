@@ -3,7 +3,19 @@ const { render } = require('./shared/render');
 const { UitkeringsApi } = require('./UitkeringsApi');
 const { BrpApi } = require('./BrpApi');
 
+
+function redirectResponse(location, code = 302) {
+    return {
+        'statusCode': code,
+        'body': '',
+        'headers': { 
+            'Location': location
+        }
+    }
+}
+
 exports.requestHandler = async (cookies, apiClient, dynamoDBClient) => {
+    if(!cookies || !apiClient || !dynamoDBClient) { throw new Error('all handler params are required'); }
     console.time('request');
     console.timeLog('request', 'start request');
     console.timeLog('request', 'finished init');
