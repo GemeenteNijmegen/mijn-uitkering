@@ -34,7 +34,7 @@ class ApiClient {
      * @returns string private key
      */
      async getPrivateKey() {
-        if(!this.privatekey) { 
+        if(!this.privatekey && process.env.MTLS_PRIVATE_KEY_ARN) { 
             const secretsManagerClient = new SecretsManagerClient();
             const command = new GetSecretValueCommand({ SecretId: process.env.MTLS_PRIVATE_KEY_ARN });
             const data = await secretsManagerClient.send(command);
@@ -56,7 +56,7 @@ class ApiClient {
      * @returns param value
      */
     async getParameterValue(name) {
-        const client = new SSMClient;
+        const client = new SSMClient();
         const command = new GetParameterCommand({ Name: name });
         const response = await client.send(command);
         return response?.Parameter.Value;
