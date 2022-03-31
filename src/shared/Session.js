@@ -15,8 +15,9 @@ class Session {
      * sessions as needed.
      * @param {object} event the event object provided to the lambda
      */
-    constructor(event) {
+    constructor(event, dynamoDBClient) {
         this.sessionId = this.getSessionId(event);
+        this.dbClient = dynamoDBClient;
     }
 
     /**
@@ -40,7 +41,6 @@ class Session {
      * @returns dynamodb record | false
      */
     async init() {
-        this.dbClient = new DynamoDBClient();
         if (!this.sessionId) { return false; }
         const getItemCommand = new GetItemCommand({
             TableName: process.env.SESSION_TABLE,

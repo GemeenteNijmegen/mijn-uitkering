@@ -23,23 +23,24 @@ function parseEvent(event) {
     };
 }
 
-async function requestHandler(cookies, client) {
+async function requestHandler(cookies, apiClient, localDynamoDBClient) {
     console.time('request');
     console.timeLog('request', 'start request');
-    let session = new Session(dynamoDBClient, cookies);
+    if(!dynamoDBClient) { let dynamoDBClient = localDynamoDBClient; }
+    let session = new Session(cookies, dynamoDBClient);
     await session.init();
     console.timeLog('request', 'init session');
     if(session.isLoggedIn() !== true) {
         return redirectResponse('/login');
     } 
     // Get API data
-    client = client ? client : new ApiClient();
-    await client.init();
+    apiClient = apiClient ? apiClient : new ApiClient();
+    await apiClient.init();
     console.timeLog('request', 'Api Client init');
     const bsn = session.getValue('bsn');
-    const brpApi = new BrpApi(client);
+    const brpApi = new BrpApi(apiClient);
     console.timeLog('request', 'Brp Api');
-    const uitkeringsApi = new UitkeringsApi(client);
+    const uitkeringsApi = new UitkeringsApi(apiClient);
     console.timeLog('request', 'UitkeringsApi');
     const [data, brpData] = await Promise.all([uitkeringsApi.getUitkeringen(bsn), brpApi.getBrpData(bsn)]);
 
