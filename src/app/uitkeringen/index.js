@@ -3,6 +3,9 @@ const { render } = require('./shared/render');
 const { UitkeringsApi } = require('./UitkeringsApi');
 const { BrpApi } = require('./BrpApi');
 const { ApiClient } = require('./ApiClient');
+const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
+
+const dynamoDBClient = new DynamoDBClient();
 
 function redirectResponse(location, code = 302) {
     return {
@@ -22,7 +25,8 @@ function parseEvent(event) {
 
 async function requestHandler(cookies, client) {
     console.time('request');
-    let session = new Session(cookies);
+    console.timeLog('request', 'start request');
+    let session = new Session(dynamoDBClient, cookies);
     await session.init();
     console.timeLog('request', 'init session');
     if(session.isLoggedIn() !== true) {
