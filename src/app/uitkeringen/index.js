@@ -1,11 +1,21 @@
-const { Session } = require('./shared/Session');
-const { render } = require('./shared/render');
-const { UitkeringsApi } = require('./UitkeringsApi');
-const { BrpApi } = require('./BrpApi');
 const { ApiClient } = require('./ApiClient');
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
+const { requestHandler } = require("./requestHandler");
 
 const dynamoDBClient = new DynamoDBClient();
+exports.dynamoDBClient = dynamoDBClient;
+const apiClient = new ApiClient();
+
+async function init() {
+    return new Promise((resolve, reject) => {
+        console.time('init');
+        console.timeLog('init', 'start init');
+        apiClient.init();
+        console.timeEnd('init');
+    });
+}
+
+const initPromise = init();
 
 function redirectResponse(location, code = 302) {
     return {
@@ -16,6 +26,7 @@ function redirectResponse(location, code = 302) {
         }
     }
 }
+exports.redirectResponse = redirectResponse;
 
 function parseEvent(event) {
     return { 
@@ -23,48 +34,11 @@ function parseEvent(event) {
     };
 }
 
-async function requestHandler(cookies, apiClient, localDynamoDBClient) {
-    console.time('request');
-    console.timeLog('request', 'start request');
-    if(!dynamoDBClient) { let dynamoDBClient = localDynamoDBClient; }
-    let session = new Session(cookies, dynamoDBClient);
-    await session.init();
-    console.timeLog('request', 'init session');
-    if(session.isLoggedIn() !== true) {
-        return redirectResponse('/login');
-    } 
-    // Get API data
-    apiClient = apiClient ? apiClient : new ApiClient();
-    await apiClient.init();
-    console.timeLog('request', 'Api Client init');
-    const bsn = session.getValue('bsn');
-    const brpApi = new BrpApi(apiClient);
-    console.timeLog('request', 'Brp Api');
-    const uitkeringsApi = new UitkeringsApi(apiClient);
-    console.timeLog('request', 'UitkeringsApi');
-    const [data, brpData] = await Promise.all([uitkeringsApi.getUitkeringen(bsn), brpApi.getBrpData(bsn)]);
-
-    data.volledigenaam = brpData?.Persoon?.Persoonsgegevens?.Naam ? brpData.Persoon.Persoonsgegevens.Naam : 'Onbekende gebruiker';
-    
-    // render page
-    const html = await render(data, __dirname + '/templates/uitkeringen.mustache');
-    response = {
-        'statusCode': 200,
-        'body': html,
-        'headers': { 
-            'Content-type': 'text/html'
-        },
-        'cookies': [
-            'session='+ session.sessionId + '; HttpOnly; Secure;',
-        ]
-    }
-    console.timeEnd('request');
-    return response;
-}
 exports.handler = async (event, context) => {
     try {
         const params = parseEvent(event);
-        return await requestHandler(params.cookies);
+        await initPromise;
+        return await requestHandler(params.cookies, apiClient, dynamoDBClient);
     
     } catch (err) {
         console.debug(err);
@@ -74,4 +48,3 @@ exports.handler = async (event, context) => {
         return response;
     }
 };
-exports.requestHandler = requestHandler;
