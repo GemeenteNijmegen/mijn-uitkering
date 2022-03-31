@@ -71,6 +71,7 @@ test('Http Api', async () => {
     'Content-type': 'text/xml',
     'SoapAction': process.env.UITKERING_API_URL + '/getData',
   });
+  console.debug(result);
   expect(result).toContain('<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">');
 });
 
@@ -104,5 +105,6 @@ test('Http Api No result', async () => {
     'Content-type': 'text/xml',
     'SoapAction': process.env.UITKERING_API_URL + '/getData',
   });
+  console.debug(result);
   expect(result).toContain('<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">');
 });
