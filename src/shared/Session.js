@@ -1,11 +1,11 @@
 const cookie = require('cookie');
 const crypto = require('crypto');
-const { DynamoDBClient, GetItemCommand, PutItemCommand, UpdateItemCommand } = require("@aws-sdk/client-dynamodb");
+const { GetItemCommand, PutItemCommand, UpdateItemCommand } = require("@aws-sdk/client-dynamodb");
 
 class Session {
     sessionId = false;
     // state parameter to validate OpenIDConnect response
-    state = false;
+    state = false;;
     
     /**
      * Session handler
