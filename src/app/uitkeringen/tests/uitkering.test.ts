@@ -45,7 +45,8 @@ test('Returns 200', async () => {
   };
   secretsMock.mockImplementation(() => output);
   const client = new FileApiClient();
-  const result = await lambda.requestHandler('session=12345', client);
+  const dynamoDBClient = new DynamoDBClient({});
+  const result = await lambda.requestHandler('session=12345', client, dynamoDBClient);
   expect(result.statusCode).toBe(200);
 });
 
@@ -56,7 +57,8 @@ test('Shows overview page', async () => {
   };
   secretsMock.mockImplementation(() => output);
   const client = new FileApiClient();
-  const result = await lambda.requestHandler('session=12345', client);
+  const dynamoDBClient = new DynamoDBClient({});
+  const result = await lambda.requestHandler('session=12345', client, dynamoDBClient);
   expect(result.body).toMatch('Mijn Uitkering');
   expect(result.body).toMatch('Participatiewet');
 });
