@@ -14,6 +14,10 @@ class FileApiClient {
         
     }
 
+    init() {
+        // This space intentionally left blank ;)
+    }
+
     /**
      * Request data from the API. 
      * @returns {string|object} XML string or javascript object
