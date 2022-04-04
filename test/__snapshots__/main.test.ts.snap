@@ -52,7 +52,7 @@ Object {
     },
     \\"build\\": {
       \\"commands\\": [
-        \\"cdk-assets --path \\\\\\"assembly-test-mijn-uitkering-api/testmijnuitkeringapiuitkeringsapi14A41BD4.assets.json\\\\\\" --verbose publish \\\\\\"12fd8f6863306d666268177a8dd3d0b796b52f28375b092bd717d0dc86bf1f6a:test-eu-west-1\\\\\\"\\"
+        \\"cdk-assets --path \\\\\\"assembly-test-mijn-uitkering-api/testmijnuitkeringapiuitkeringsapi14A41BD4.assets.json\\\\\\" --verbose publish \\\\\\"b784734932ba605305fda98fa1335c3a8df574f7d0a37fb808a13bee125a8731:test-eu-west-1\\\\\\"\\"
       ]
     }
   }
