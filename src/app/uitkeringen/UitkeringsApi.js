@@ -13,6 +13,8 @@ class UitkeringsApi {
             'Content-type': 'text/xml',
             'SoapAction': this.endpoint + '/getData'
         });
+        console.log('Uitkerings api response: ');
+        console.log(data.substring(0, 10));
         const object = await xml2js.parseStringPromise(data);
         const uitkeringsRows =  this.mapUitkeringsRows(object);
         let uitkeringen = this.mapUitkering(uitkeringsRows);
