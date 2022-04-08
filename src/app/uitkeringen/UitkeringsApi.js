@@ -25,10 +25,19 @@ class UitkeringsApi {
         return {'uitkeringen': []};
     }
 
+    /**
+     * Get request body
+     * 
+     * NB: The xml:ns2 should be this exact string for all environments
+     * including prod.
+     * 
+     * @param {string} bsn bsn for person information should be returned for
+     * @returns string an XML-payload for the request body
+     */
     body(bsn) {
         return `<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
             <soap:Body>
-                <ns2:dataRequest xmlns:ns2="${this.endpoint}/">
+                <ns2:dataRequest xmlns:ns2="https://data-test.nijmegen.nl/mijnNijmegenData">
                     <identifier>${bsn}</identifier>
                     <contentSource>mijnUitkering</contentSource>
                 </ns2:dataRequest>
