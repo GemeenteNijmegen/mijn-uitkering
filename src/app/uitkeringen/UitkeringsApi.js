@@ -11,7 +11,7 @@ class UitkeringsApi {
     async getUitkeringen(bsn) {
         const data = await this.client.requestData(this.endpoint, this.body(bsn), {
             'Content-type': 'text/xml',
-            'SoapAction': this.endpoint + '/getData'
+            'SoapAction': 'https://data-test.nijmegen.nl/mijnNijmegenData/getData'
         });
         console.log('Uitkerings api response: ');
         console.log(data.substring(0, 10));
