@@ -1,7 +1,7 @@
-import { DynamoDBClient, GetItemCommandOutput } from '@aws-sdk/client-dynamodb';
-import { SecretsManagerClient, GetSecretValueCommandOutput } from '@aws-sdk/client-secrets-manager';
 import { writeFile } from 'fs';
 import * as path from 'path';
+import { DynamoDBClient, GetItemCommandOutput } from '@aws-sdk/client-dynamodb';
+import { SecretsManagerClient, GetSecretValueCommandOutput } from '@aws-sdk/client-secrets-manager';
 import { mockClient } from 'jest-aws-client-mock';
 import { FileApiClient } from '../FileApiClient';
 import { requestHandler } from '../requestHandler';
