@@ -5,6 +5,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   defaultReleaseBranch: 'production',
   release: true,
   majorVersion: 1,
+  license: 'EUPL-1.2',
   name: 'mijnuitkering',
   deps: [
     'dotenv',
@@ -42,6 +43,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     '.vscode',
     'src/app/**/shared',
     '.DS_Store',
+    'src/app/**/tests/output',
   ],
 });
 project.synth();

@@ -34,6 +34,7 @@ jspm_packages/
 .vscode
 src/app/**/shared
 .DS_Store
+src/app/**/tests/output
 !/.projenrc.js
 /test-reports/
 junit.xml
@@ -43,6 +44,7 @@ junit.xml
 /dist/version.txt
 !/.github/workflows/release.yml
 !/.mergify.yml
+!/.github/workflows/upgrade-acceptance.yml
 !/.github/pull_request_template.md
 !/test/
 !/tsconfig.json
@@ -56,4 +58,3 @@ junit.xml
 /cdk.out/
 .cdk.staging/
 .parcel-cache/
-!/.github/workflows/upgrade-acceptance.yml
