@@ -52,7 +52,11 @@ Object {
     },
     \\"build\\": {
       \\"commands\\": [
+<<<<<<< Updated upstream
         \\"cdk-assets --path \\\\\\"assembly-test-mijn-uitkering-api/testmijnuitkeringapiuitkeringsapi14A41BD4.assets.json\\\\\\" --verbose publish \\\\\\"441d5be17a80a6691c6ed2d5165bbb718bde3a61b2d0f7f1d81a3f3736729bc8:test-eu-west-1\\\\\\"\\"
+=======
+        \\"cdk-assets --path \\\\\\"assembly-test-mijn-uitkering-api/testmijnuitkeringapiuitkeringsapi14A41BD4.assets.json\\\\\\" --verbose publish \\\\\\"16404abf5d15eba0745e747dcd77df70613071579694dc09b1620763f3458a82:test-eu-west-1\\\\\\"\\"
+>>>>>>> Stashed changes
       ]
     }
   }
