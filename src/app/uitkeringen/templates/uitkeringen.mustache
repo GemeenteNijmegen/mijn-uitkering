@@ -94,56 +94,31 @@
             <div class="col-sm-8">
                 <h1>Mijn Uitkering</h1>
                 <p class="lead">Hier vindt u een overzicht van uw uitkeringen.</p>
-                
-                <div class="tabs-wrapper">
-                    <!-- Tab List -->
-                    <div class="nav classic-tabs-no-line" role="tablist" aria-label="Uitkeringen">
-                    {{#uitkeringen}}
-                        <div class="nav-item">
-                            <button class="nav-link {{#selected}}active{{/selected}}" role="tab" {{#selected}}aria-selected="true" {{/selected}} aria-controls="{{uitkeringattr}}-tab" id="{{uitkeringattr}}-tabcontrol">
-                                {{type}}
-                            </button>
+                {{#multipleUitkeringen}}
+                    <div class="tabs-wrapper">
+                        <!-- Tab List -->
+                        <div class="nav classic-tabs-no-line" role="tablist" aria-label="Uitkeringen">
+                        {{#uitkeringen}}
+                            <div class="nav-item">
+                                <button class="nav-link {{#selected}}active{{/selected}}" role="tab" {{#selected}}aria-selected="true" {{/selected}} aria-controls="{{uitkeringattr}}-tab" id="{{uitkeringattr}}-tabcontrol">
+                                    {{type}}
+                                </button>
+                            </div>
+                        {{/uitkeringen}}
                         </div>
-                    {{/uitkeringen}}
-                    </div>
-                    {{#uitkeringen}}
-                    <!-- Tab Content -->
-                    <div class="tab-content" tabindex="0" role="tabpanel" id="{{uitkeringattr}}-tab" aria-labelledby="{{uitkeringattr}}-tabcontrol">
-                        <h2>{{type}}</h2>
-                        <div class="card card-number">
-                            <div class="card-body">
-                                <p class="card-title">€ {{#fieldsByName}} {{betaald-totaal}} {{/fieldsByName}}</p>
-                                <p class="card-text">Totaal betaald</p>
-                            </div>
-                            <div class="card-body">
-                                <p class="card-title">€	{{#fieldsByName}} {{betaald-aan-u}} {{/fieldsByName}}</p>
-                                <p class="card-text">Betaald aan u</p>
-                            </div>
-                            <div class="card-body">
-                                <p class="card-title">€	{{#fieldsByName}} {{betaald-aan-derde}} {{/fieldsByName}}</p>
-                                <p class="card-text">Betaald aan derde</p>
-                            </div>
-                            <div class="card-body">
-                                <p class="card-title">{{#fieldsByName}} {{laatste-betaling}} {{/fieldsByName}}</p>
-                                <p class="card-text">Betalingsdatum</p>
-                            </div>
+                        {{#uitkeringen}}
+                        <!-- Tab Content -->
+                        <div class="tab-content" tabindex="0" role="tabpanel" id="{{uitkeringattr}}-tab" aria-labelledby="{{uitkeringattr}}-tabcontrol">
+                            {{> uitkering }}
                         </div>
-                        
-                        <h3>Uitkeringsgegevens</h3>
-                        
-                        <table class="responsive-table">
-                            <tbody>
-                                {{#fields}}
-                                <tr>
-                                    <th>{{label}}</td>
-                                    <td>{{value}}</td>
-                                </tr>
-                                {{/fields}}
-                            </tbody>
-                        </table>
+                        {{/uitkeringen}}
                     </div>
+                {{/multipleUitkeringen}}
+                {{^multipleUitkeringen}}
+                    {{#uitkeringen}}
+                        {{> uitkering }}
                     {{/uitkeringen}}
-                </div>
+                {{/multipleUitkeringen}}
                 {{^uitkeringen}}
                 <p>U heeft geen lopende uitkeringen.</p>
                 {{/uitkeringen}}

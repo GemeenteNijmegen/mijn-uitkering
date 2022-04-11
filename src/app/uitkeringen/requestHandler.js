@@ -35,9 +35,9 @@ exports.requestHandler = async (cookies, apiClient, dynamoDBClient) => {
     const [data, brpData] = await Promise.all([uitkeringsApi.getUitkeringen(bsn), brpApi.getBrpData(bsn)]);
 
     data.volledigenaam = brpData?.Persoon?.Persoonsgegevens?.Naam ? brpData.Persoon.Persoonsgegevens.Naam : 'Onbekende gebruiker';
-
+    data.multipleUitkeringen = (data.uitkeringen.length > 1);
     // render page
-    const html = await render(data, __dirname + '/templates/uitkeringen.mustache');
+    const html = await render(data, __dirname + '/templates/uitkeringen.mustache', { 'uitkering': __dirname + '/templates/uitkerings-item.mustache' });
     response = {
         'statusCode': 200,
         'body': html,
