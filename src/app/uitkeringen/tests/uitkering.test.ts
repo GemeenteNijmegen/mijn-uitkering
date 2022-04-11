@@ -1,5 +1,7 @@
 import { DynamoDBClient, GetItemCommandOutput } from '@aws-sdk/client-dynamodb';
 import { SecretsManagerClient, GetSecretValueCommandOutput } from '@aws-sdk/client-secrets-manager';
+import { writeFile } from 'fs';
+import * as path from 'path';
 import { mockClient } from 'jest-aws-client-mock';
 import { FileApiClient } from '../FileApiClient';
 import { requestHandler } from '../requestHandler';
@@ -61,4 +63,5 @@ test('Shows overview page', async () => {
   const result = await requestHandler('session=12345', client, dynamoDBClient);
   expect(result.body).toMatch('Mijn Uitkering');
   expect(result.body).toMatch('Participatiewet');
+  writeFile(path.join(__dirname, 'output', 'test.html'), result.body, () => {});
 });
