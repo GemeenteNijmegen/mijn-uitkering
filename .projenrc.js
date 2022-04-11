@@ -5,6 +5,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   defaultReleaseBranch: 'production',
   release: true,
   majorVersion: 1,
+  license: 'EUPL-1.2',
   name: 'mijnuitkering',
   deps: [
     'dotenv',
