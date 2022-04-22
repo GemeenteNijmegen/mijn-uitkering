@@ -47,9 +47,9 @@ export class UitkeringsApiStack extends Stack {
     const monitoringLambdaArn = SSM.StringParameter.valueForStringParameter(this, Statics.ssmMonitoringLambdaArn);
     const monitoringFunction = Function.fromFunctionAttributes(this, 'monitoring', {
       functionArn: monitoringLambdaArn,
-      sameEnvironment: true
+      sameEnvironment: true,
     });
-    
+
     const uitkeringenFunction = new ApiFunction(this, 'uitkeringen-function', {
       description: 'Uitkeringen-lambda voor de Mijn Uitkering-applicatie.',
       codePath: 'app/uitkeringen',
