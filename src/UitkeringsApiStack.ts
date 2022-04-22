@@ -45,8 +45,11 @@ export class UitkeringsApiStack extends Stack {
     const tlsRootCAParam = SSM.StringParameter.fromStringParameterName(this, 'tlsrootca', Statics.ssmMTLSRootCA);
 
     const monitoringLambdaArn = SSM.StringParameter.valueForStringParameter(this, Statics.ssmMonitoringLambdaArn);
-    const monitoringFunction = Function.fromFunctionArn(this, 'monitoring-function', monitoringLambdaArn);
-
+    const monitoringFunction = Function.fromFunctionAttributes(this, 'monitoring', {
+      functionArn: monitoringLambdaArn,
+      sameEnvironment: true
+    });
+    
     const uitkeringenFunction = new ApiFunction(this, 'uitkeringen-function', {
       description: 'Uitkeringen-lambda voor de Mijn Uitkering-applicatie.',
       codePath: 'app/uitkeringen',
