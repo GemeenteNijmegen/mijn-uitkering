@@ -1,6 +1,6 @@
 const { awscdk } = require('projen');
 const project = new awscdk.AwsCdkTypeScriptApp({
-  cdkVersion: '2.20.0',
+  cdkVersion: '2.21.1',
   cdkVersionPinning: true,
   defaultReleaseBranch: 'production',
   release: true,
@@ -32,7 +32,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     },
   },
   scripts: {
-    'install:uitkeringen': 'copyfiles -f src/shared/*.js src/app/uitkeringen/shared && cd src/app/uitkeringen && npm install',
+    'install:uitkeringen': 'copyfiles -f src/shared/* src/app/uitkeringen/shared && cd src/app/uitkeringen && npm install',
     'postinstall': 'npm run install:uitkeringen',
   },
   eslintOptions: {
