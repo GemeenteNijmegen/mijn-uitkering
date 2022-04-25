@@ -142,7 +142,7 @@
       "name": "install:uitkeringen",
       "steps": [
         {
-          "exec": "copyfiles -f src/shared/*.js src/app/uitkeringen/shared && cd src/app/uitkeringen && npm install"
+          "exec": "copyfiles -f src/shared/* src/app/uitkeringen/shared && cd src/app/uitkeringen && npm install"
         }
       ]
     },

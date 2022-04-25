@@ -33,11 +33,11 @@ exports.requestHandler = async (cookies, apiClient, dynamoDBClient) => {
     const uitkeringsApi = new UitkeringsApi(apiClient);
     console.timeLog('request', 'UitkeringsApi');
     const [data, brpData] = await Promise.all([uitkeringsApi.getUitkeringen(bsn), brpApi.getBrpData(bsn)]);
-
     data.volledigenaam = brpData?.Persoon?.Persoonsgegevens?.Naam ? brpData.Persoon.Persoonsgegevens.Naam : 'Onbekende gebruiker';
     data.multipleUitkeringen = (data.uitkeringen.length > 1);
-    // render page
-    const html = await render(data, __dirname + '/templates/uitkeringen.mustache', { 'uitkering': __dirname + '/templates/uitkerings-item.mustache' });
+
+    const html = await renderHtml(data);
+
     response = {
         'statusCode': 200,
         'body': html,
@@ -51,3 +51,16 @@ exports.requestHandler = async (cookies, apiClient, dynamoDBClient) => {
     console.timeEnd('request');
     return response;
 }
+async function renderHtml(data) {
+    data.title = 'Uitkeringen';
+    data.shownav = true;
+
+    // render page
+    const html = await render(data, __dirname + '/templates/uitkeringen.mustache', {
+        'header': __dirname + '/shared/header.mustache',
+        'footer': __dirname + '/shared/footer.mustache',
+        'uitkering': __dirname + '/templates/uitkerings-item.mustache'
+    });
+    return html;
+}
+
