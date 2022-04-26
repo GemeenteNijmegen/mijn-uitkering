@@ -7,7 +7,7 @@ class ApiClient {
     /**
      * Connects to API's. Use .requestData() to get the actual info
      * 
-     * @param {string} bsn BSN to request uitkeringsdata for
+     * @param {string} bsn BSN to request data for
      * @param {string|null} cert optional client cert, default is env variable MTLS_CLIENT_CERT
      * @param {string|null} key optional private key for client cert, default will get key from secret store
      * @param {string|null} ca optional root ca bundle to trust, default is env variable MTLS_ROOT_CA
@@ -34,15 +34,18 @@ class ApiClient {
      * @returns string private key
      */
      async getPrivateKey() {
-        if(!this.privatekey && process.env.MTLS_PRIVATE_KEY_ARN) { 
+        if(!this.privatekey) { 
+            if(!process.env.MTLS_PRIVATE_KEY_ARN) {
+                throw new Error ('no secret arn provided');
+            }
             const secretsManagerClient = new SecretsManagerClient();
             const command = new GetSecretValueCommand({ SecretId: process.env.MTLS_PRIVATE_KEY_ARN });
             const data = await secretsManagerClient.send(command);
             // Depending on whether the secret is a string or binary, one of these fields will be populated.
             if ('SecretString' in data) {
                 this.privatekey = data.SecretString
-            } else {      
-                console.log('no secret value found');
+            } else {
+                throw new Error('No secret value found');
             }
         }
         return this.privatekey;
@@ -64,7 +67,7 @@ class ApiClient {
 
     /**
      * Request data from the API. 
-     * @returns {string} XML string with uitkeringsdata
+     * @returns {string} api response
      */
     async requestData(endpoint, body, headers) {
         console.time('request to ' + endpoint);
@@ -85,19 +88,17 @@ class ApiClient {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
                 console.log('http status for ' + endpoint + ': ' + error.response.status);
-                return error.response.data;
-                console.debug('return response from ' + endpoint);
+                
               } else if (error.request) {
                 // The request was made but no response was received
                 // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
                 // http.ClientRequest in node.js
                 console.error(error?.code);
-                return '';
               } else {
                 // Something happened in setting up the request that triggered an Error
-                console.error('Error', error.message);
-                return '';
+                console.error(error.message);
             }
+            throw new Error('Het ophalen van gegevens is misgegaan.');
         }
     }
 
