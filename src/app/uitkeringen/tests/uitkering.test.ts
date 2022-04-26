@@ -3,10 +3,10 @@ import * as path from 'path';
 import { DynamoDBClient, GetItemCommandOutput } from '@aws-sdk/client-dynamodb';
 import { SecretsManagerClient, GetSecretValueCommandOutput } from '@aws-sdk/client-secrets-manager';
 import { SSMClient, GetParameterCommandOutput } from '@aws-sdk/client-ssm';
-import { mockClient } from 'jest-aws-client-mock';
-import { ApiClient } from '../ApiClient';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { mockClient } from 'jest-aws-client-mock';
+import { ApiClient } from '../ApiClient';
 import { requestHandler } from '../requestHandler';
 
 beforeAll(() => {
@@ -73,9 +73,9 @@ test('Returns 200', async () => {
   const file = 'uitkering-12345678.xml';
   const filePath = path.join('responses', file);
   const returnData = await getStringFromFilePath(filePath)
-  .then((data: any) => {
-    return data;
-  });
+    .then((data: any) => {
+      return data;
+    });
   axiosMock.onPost().reply(200, returnData);
   const client = new ApiClient();
   const dynamoDBClient = new DynamoDBClient({});
@@ -94,16 +94,15 @@ test('Shows overview page', async () => {
   const file = 'uitkering-12345678.xml';
   const filePath = path.join('responses', file);
   const returnData = await getStringFromFilePath(filePath)
-  .then((data: any) => {
-    return data;
-  });
+    .then((data: any) => {
+      return data;
+    });
   axiosMock.onPost().reply(200, returnData);
   const result = await requestHandler('session=12345', client, dynamoDBClient);
   expect(result.body).toMatch('Mijn Uitkering');
   expect(result.body).toMatch('Participatiewet');
   fs.writeFile(path.join(__dirname, 'output', 'test.html'), result.body, () => {});
 });
-
 
 
 test('Shows two uitkeringen page', async () => {
@@ -117,9 +116,9 @@ test('Shows two uitkeringen page', async () => {
   const file = 'tweeuitkeringen.xml';
   const filePath = path.join('responses', file);
   const returnData = await getStringFromFilePath(filePath)
-  .then((data: any) => {
-    return data;
-  });
+    .then((data: any) => {
+      return data;
+    });
   axiosMock.onPost().reply(200, returnData);
   const result = await requestHandler('session=12345', client, dynamoDBClient);
   expect(result.body).toMatch('Mijn Uitkering');
@@ -139,9 +138,9 @@ test('Shows empty page', async () => {
   const file = 'empty.xml';
   const filePath = path.join('responses', file);
   const returnData = await getStringFromFilePath(filePath)
-  .then((data: any) => {
-    return data;
-  });
+    .then((data: any) => {
+      return data;
+    });
   axiosMock.onPost().reply(200, returnData);
   const result = await requestHandler('session=12345', client, dynamoDBClient);
   expect(result.body).toMatch('Mijn Uitkering');
@@ -158,7 +157,7 @@ test('Shows error page', async () => {
   secretsMock.mockImplementation(() => output);
   const client = new ApiClient();
   const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
-  
+
   axiosMock.onPost().reply(404);
   const result = await requestHandler('session=12345', client, dynamoDBClient);
   expect(result.body).toMatch('Mijn Uitkering');
