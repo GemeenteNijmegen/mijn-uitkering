@@ -34,7 +34,7 @@ exports.requestHandler = async (cookies, apiClient, dynamoDBClient) => {
     console.timeLog('request', 'UitkeringsApi');
     const [data, brpData] = await Promise.all([uitkeringsApi.getUitkeringen(bsn), brpApi.getBrpData(bsn)]);
     data.volledigenaam = brpData?.Persoon?.Persoonsgegevens?.Naam ? brpData.Persoon.Persoonsgegevens.Naam : 'Onbekende gebruiker';
-    data.multipleUitkeringen = (data.uitkeringen.length > 1);
+    data.multipleUitkeringen = (data?.uitkeringen?.length > 1);
 
     const html = await renderHtml(data);
 

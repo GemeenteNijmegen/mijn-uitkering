@@ -5,6 +5,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <h1>Mijn Uitkering</h1>
+                {{^error}}
                 <p class="lead">Hier vindt u een overzicht van uw uitkeringen.</p>
                 {{#multipleUitkeringen}}
                     <div class="tabs-wrapper">
@@ -12,7 +13,7 @@
                         <div class="nav classic-tabs-no-line" role="tablist" aria-label="Uitkeringen">
                         {{#uitkeringen}}
                             <div class="nav-item">
-                                <button class="nav-link {{#selected}}active{{/selected}}" role="tab" {{#selected}}aria-selected="true" {{/selected}} aria-controls="{{uitkeringattr}}-tab" id="{{uitkeringattr}}-tabcontrol">
+                                <button class="nav-link {{#selected}}active{{/selected}}" role="tab" {{#selected}}aria-selected="true" {{/selected}} aria-controls="{{typetolower}}-tab" id="{{typetolower}}-tabcontrol">
                                     {{type}}
                                 </button>
                             </div>
@@ -20,7 +21,7 @@
                         </div>
                         {{#uitkeringen}}
                         <!-- Tab Content -->
-                        <div class="tab-content" tabindex="0" role="tabpanel" id="{{uitkeringattr}}-tab" aria-labelledby="{{uitkeringattr}}-tabcontrol">
+                        <div class="tab-content" tabindex="0" role="tabpanel" id="{{typetolower}}-tab" aria-labelledby="{{typetolower}}-tabcontrol">
                             {{> uitkering }}
                         </div>
                         {{/uitkeringen}}
@@ -34,6 +35,11 @@
                 {{^uitkeringen}}
                 <p>U heeft geen lopende uitkeringen.</p>
                 {{/uitkeringen}}
+                {{/error}}
+                {{#error}}
+                    <h2>Er is iets misgegaan</h2>
+                    <p>{{error}}</p>
+                {{/error}}
             </div>
         </div>
     </div>
