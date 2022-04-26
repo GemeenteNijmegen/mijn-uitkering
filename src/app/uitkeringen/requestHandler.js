@@ -43,10 +43,7 @@ exports.requestHandler = async (cookies, apiClient, dynamoDBClient) => {
         'body': html,
         'headers': {
             'Content-type': 'text/html'
-        },
-        'cookies': [
-            'session=' + session.sessionId + '; HttpOnly; Secure;',
-        ]
+        }
     };
     console.timeEnd('request');
     return response;
