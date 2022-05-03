@@ -7,7 +7,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { mockClient } from 'jest-aws-client-mock';
 import { ApiClient } from '../ApiClient';
-import { requestHandler } from '../requestHandler';
+import { uitkeringsRequestHandler } from '../uitkeringsRequestHandler';
 
 beforeAll(() => {
   global.console.log = jest.fn();
@@ -79,7 +79,7 @@ test('Returns 200', async () => {
   axiosMock.onPost().reply(200, returnData);
   const client = new ApiClient();
   const dynamoDBClient = new DynamoDBClient({});
-  const result = await requestHandler('session=12345', client, dynamoDBClient);
+  const result = await uitkeringsRequestHandler('session=12345', client, dynamoDBClient);
   expect(result.statusCode).toBe(200);
 });
 
@@ -98,7 +98,7 @@ test('Shows overview page', async () => {
       return data;
     });
   axiosMock.onPost().reply(200, returnData);
-  const result = await requestHandler('session=12345', client, dynamoDBClient);
+  const result = await uitkeringsRequestHandler('session=12345', client, dynamoDBClient);
   expect(result.body).toMatch('Mijn Uitkering');
   expect(result.body).toMatch('Participatiewet');
   fs.writeFile(path.join(__dirname, 'output', 'test.html'), result.body, () => {});
@@ -120,7 +120,7 @@ test('Shows two uitkeringen page', async () => {
       return data;
     });
   axiosMock.onPost().reply(200, returnData);
-  const result = await requestHandler('session=12345', client, dynamoDBClient);
+  const result = await uitkeringsRequestHandler('session=12345', client, dynamoDBClient);
   expect(result.body).toMatch('Mijn Uitkering');
   expect(result.body).toMatch('Participatiewet');
   fs.writeFile(path.join(__dirname, 'output', 'test-twee.html'), result.body, () => {});
@@ -142,7 +142,7 @@ test('Shows empty page', async () => {
       return data;
     });
   axiosMock.onPost().reply(200, returnData);
-  const result = await requestHandler('session=12345', client, dynamoDBClient);
+  const result = await uitkeringsRequestHandler('session=12345', client, dynamoDBClient);
   expect(result.body).toMatch('Mijn Uitkering');
   expect(result.body).toMatch('U heeft geen lopende uitkeringen');
   fs.writeFile(path.join(__dirname, 'output', 'test-empty.html'), result.body, () => {});
@@ -159,7 +159,7 @@ test('Shows error page', async () => {
   const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
 
   axiosMock.onPost().reply(404);
-  const result = await requestHandler('session=12345', client, dynamoDBClient);
+  const result = await uitkeringsRequestHandler('session=12345', client, dynamoDBClient);
   expect(result.body).toMatch('Mijn Uitkering');
   expect(result.body).toMatch('Er is iets misgegaan');
   fs.writeFile(path.join(__dirname, 'output', 'test-error.html'), result.body, () => {});
