@@ -9,20 +9,29 @@ class UitkeringsApi {
     }
 
     async getUitkeringen(bsn) {
-        const data = await this.client.requestData(this.endpoint, this.body(bsn), {
-            'Content-type': 'text/xml',
-            'SoapAction': 'https://data-test.nijmegen.nl/mijnNijmegenData/getData'
-        });
-        console.log('Uitkerings api response: ');
-        console.log(data.substring(0, 10));
-        const object = await xml2js.parseStringPromise(data);
-        const uitkeringsRows =  this.mapUitkeringsRows(object);
-        let uitkeringen = this.mapUitkering(uitkeringsRows);
-        if(uitkeringen) {
-            uitkeringen = this.addFieldsByName(uitkeringen);
-            return uitkeringen;
+        try {
+            const data = await this.client.requestData(this.endpoint, this.body(bsn), {
+                'Content-type': 'text/xml',
+                'SoapAction': 'https://data-test.nijmegen.nl/mijnNijmegenData/getData'
+            });
+            console.log('Uitkerings api response: ');
+            console.log(data.substring(0, 10));
+            const object = await xml2js.parseStringPromise(data);
+            const uitkeringsRows =  this.mapUitkeringsRows(object);
+            let uitkeringen = this.mapUitkering(uitkeringsRows);
+            if(uitkeringen) {
+                uitkeringen = this.addFieldsByName(uitkeringen);
+                console.debug(uitkeringen);
+                return uitkeringen;
+            }
+            return {'uitkeringen': []};
+        } catch (error) {
+            console.error(error);
+            const data = {
+                'error' : error.message
+            }
+            return data;
         }
-        return {'uitkeringen': []};
     }
 
     /**
@@ -79,6 +88,7 @@ class UitkeringsApi {
                 return obj;
             });
             uitkering.fieldsByName = fieldsByName;
+            uitkering.typetolower = uitkering.type.toLowerCase().replace(/\s+/g, '-');
         });
         return uitkeringen;
     }
