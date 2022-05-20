@@ -10,7 +10,11 @@ import { ApiClient } from '../ApiClient';
 import { uitkeringsRequestHandler } from '../uitkeringsRequestHandler';
 
 beforeAll(() => {
-  global.console.log = jest.fn();
+  if (process.env.VERBOSETESTS!='True') {
+    global.console.error = jest.fn();
+    global.console.time = jest.fn();
+    global.console.log = jest.fn();
+  }
   // Set env variables
   process.env.SESSION_TABLE = 'mijnuitkering-sessions';
   process.env.AUTH_URL_BASE = 'https://authenticatie-accp.nijmegen.nl';
@@ -50,14 +54,11 @@ beforeEach(() => {
 
   const getItemOutput: Partial<GetItemCommandOutput> = {
     Item: {
-      loggedin: {
-        BOOL: true,
-      },
-      bsn: {
-        S: '12345678',
-      },
-      state: {
-        S: '12345',
+      data: {
+        M: {
+          loggedin: { BOOL: true },
+          bsn: { S: '12345678' },
+        },
       },
     },
   };
