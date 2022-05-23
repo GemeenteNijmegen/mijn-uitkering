@@ -7,6 +7,11 @@ import { UitkeringsApiStack } from '../src/UitkeringsApiStack';
 
 beforeAll(() => {
   Dotenv.config();
+  if (process.env.VERBOSETESTS!='True') {
+    global.console.error = jest.fn();
+    global.console.time = jest.fn();
+    global.console.log = jest.fn();
+  }
 });
 
 test('Snapshot', () => {

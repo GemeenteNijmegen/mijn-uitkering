@@ -21,7 +21,6 @@ class UitkeringsApi {
             let uitkeringen = this.mapUitkering(uitkeringsRows);
             if(uitkeringen) {
                 uitkeringen = this.addFieldsByName(uitkeringen);
-                console.debug(uitkeringen);
                 return uitkeringen;
             }
             return {'uitkeringen': []};
