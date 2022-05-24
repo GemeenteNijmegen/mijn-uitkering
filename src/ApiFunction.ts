@@ -24,6 +24,7 @@ export class ApiFunction extends Construct {
     this.lambda = new Lambda.Function(this, 'lambda', {
       runtime: Lambda.Runtime.NODEJS_14_X,
       handler: 'index.handler',
+      memorySize: 512,
       description: props.description,
       logRetention: RetentionDays.ONE_MONTH,
       code: Lambda.Code.fromAsset(path.join(__dirname, props.codePath)),
