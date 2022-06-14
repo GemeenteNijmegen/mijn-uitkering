@@ -29,7 +29,7 @@ class FileApiClient {
             file = 'uitkering-12345678.xml'
         }
         if(endpoint.indexOf('Irma')>=0) {
-            file = 'brp-12345678.json'
+            file = 'brp-900222670.json'
             parse = 'json';
         }
         const filePath = path.join('tests/responses', file);

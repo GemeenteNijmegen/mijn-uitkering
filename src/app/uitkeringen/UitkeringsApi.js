@@ -1,21 +1,21 @@
 const xml2js = require('xml2js');
 const ObjectMapper = require('object-mapper');
 const { ApiClient } = require('./ApiClient');
+const { Bsn } = require('@gemeentenijmegen/utils');
 
 class UitkeringsApi {
     constructor(client) {
-        this.client = client ? client : new ApiClient(bsn);
+        this.client = client ? client : new ApiClient();
         this.endpoint = process.env.UITKERING_API_URL ? process.env.UITKERING_API_URL : 'mijnNijmegenData';
     }
 
     async getUitkeringen(bsn) {
         try {
-            const data = await this.client.requestData(this.endpoint, this.body(bsn), {
+            const aBsn = new Bsn(bsn);
+            const data = await this.client.requestData(this.endpoint, this.body(aBsn.bsn), {
                 'Content-type': 'text/xml',
                 'SoapAction': 'https://data-test.nijmegen.nl/mijnNijmegenData/getData'
             });
-            console.log('Uitkerings api response: ');
-            console.log(data.substring(0, 10));
             const object = await xml2js.parseStringPromise(data);
             const uitkeringsRows =  this.mapUitkeringsRows(object);
             let uitkeringen = this.mapUitkering(uitkeringsRows);

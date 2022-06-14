@@ -57,7 +57,7 @@ beforeEach(() => {
       data: {
         M: {
           loggedin: { BOOL: true },
-          bsn: { S: '12345678' },
+          bsn: { S: '999990676' },
         },
       },
     },
