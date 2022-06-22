@@ -1,5 +1,6 @@
 import fs from 'fs';
-import { ApiClient } from '../ApiClient';
+import path from 'path';
+import { ApiClient } from '@gemeentenijmegen/apiclient';
 import { BrpApi } from '../BrpApi';
 import { FileApiClient } from '../FileApiClient';
 
@@ -9,15 +10,15 @@ if (process.env.VERBOSETESTS!='True') {
   global.console.log = jest.fn();
 }
 
-
-async function getStringFromFilePath(filePath: string) {
+async function getStringFromFilePath(filePath: string): Promise<string> {
   return new Promise((res, rej) => {
-    fs.readFile(filePath, (err, data) => {
+    fs.readFile(path.join(__dirname, filePath), (err, data) => {
       if (err) {return rej(err);}
       return res(data.toString());
     });
   });
 }
+
 
 // This test doesn't run in CI by default, depends on unavailable secrets
 test('Mock api', async () => {
@@ -26,8 +27,9 @@ test('Mock api', async () => {
   }
   const client = new FileApiClient();
   const api = new BrpApi(client);
-  const result = await api.getBrpData(12345678);
-  expect(result.Persoon.BSN.BSN).toBe('12345678');
+  const result = await api.getBrpData('900222670');
+  console.debug(result);
+  expect(result.Persoon.BSN.BSN).toBe('900222670');
 });
 
 // This test doesn't run in CI by default, depends on unavailable secrets
@@ -40,7 +42,7 @@ test('Api', async () => {
   const ca = await getStringFromFilePath(process.env.CAPATH);
   const client = new ApiClient(cert, key, ca);
   const api = new BrpApi(client);
-  const result = await api.getBrpData(999993653);
+  const result = await api.getBrpData('999993653');
   expect(result.Persoon.BSN.BSN).toBe('999993653');
   expect(result.Persoon.Persoonsgegevens.Naam).toBe('S. Moulin');
 });

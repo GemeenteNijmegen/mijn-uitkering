@@ -1,4 +1,5 @@
-const { ApiClient } = require('./ApiClient');
+const { ApiClient } = require('@gemeentenijmegen/apiclient');
+const { Bsn } = require('@gemeentenijmegen/utils');
 
 class BrpApi {
     constructor(client) {
@@ -8,18 +9,19 @@ class BrpApi {
 
     async getBrpData(bsn) {
         try {
-            let data = await this.client.requestData(this.endpoint, {"bsn": bsn}, {'Content-type': 'application/json'});
+            const aBsn = new Bsn(bsn);
+            let data = await this.client.requestData(this.endpoint, {"bsn": aBsn.bsn}, {'Content-type': 'application/json'});
             if(data?.Persoon) {
                 return data;
             } else {
-                throw new Error('Er konden geen persoonsgegevens opgehaald worden.');
+                return {}; // Processing application handles unknown users
             }
         } catch (error) {
             const data = {
                 'error' : error.message
             }
             return data;
-        }
+}
     }
 }
 
