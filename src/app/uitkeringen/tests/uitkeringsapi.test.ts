@@ -1,5 +1,6 @@
 import fs from 'fs';
-import { ApiClient } from '../ApiClient';
+import path from 'path';
+import { ApiClient } from '@gemeentenijmegen/apiclient';
 import { FileApiClient } from '../FileApiClient';
 import { UitkeringsApi } from '../UitkeringsApi';
 
@@ -9,9 +10,9 @@ if (process.env.VERBOSETESTS!='True') {
   global.console.log = jest.fn();
 }
 
-async function getStringFromFilePath(filePath: string) {
+async function getStringFromFilePath(filePath: string): Promise<string> {
   return new Promise((res, rej) => {
-    fs.readFile(filePath, (err, data) => {
+    fs.readFile(path.join(__dirname, filePath), (err, data) => {
       if (err) {return rej(err);}
       return res(data.toString());
     });
@@ -41,6 +42,9 @@ test('Http Api', async () => {
   const cert = await getStringFromFilePath(process.env.CERTPATH);
   const key = await getStringFromFilePath(process.env.KEYPATH);
   const ca = await getStringFromFilePath(process.env.CAPATH);
+  if (!cert || !key || !ca) {
+    expect(false).toBe(true);
+  }
   const client = new ApiClient(cert, key, ca);
   const body = `<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
         <soap:Body>
@@ -74,6 +78,9 @@ test('Http Api No result', async () => {
   const cert = await getStringFromFilePath(process.env.CERTPATH);
   const key = await getStringFromFilePath(process.env.KEYPATH);
   const ca = await getStringFromFilePath(process.env.CAPATH);
+  if (!cert || !key || !ca) {
+    expect(false).toBe(true);
+  }
   const client = new ApiClient(cert, key, ca);
   const body = `<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
         <soap:Body>

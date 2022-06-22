@@ -1,4 +1,4 @@
-const { ApiClient } = require('./ApiClient');
+const { ApiClient } = require('@gemeentenijmegen/apiclient');
 const { Bsn } = require('@gemeentenijmegen/utils');
 
 class BrpApi {
@@ -14,14 +14,14 @@ class BrpApi {
             if(data?.Persoon) {
                 return data;
             } else {
-                throw new Error('Er konden geen persoonsgegevens opgehaald worden.');
+                return {}; // Processing application handles unknown users
             }
         } catch (error) {
             const data = {
                 'error' : error.message
             }
             return data;
-        }
+}
     }
 }
 
