@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 import { ApiClient } from '@gemeentenijmegen/apiclient';
 import { BrpApi } from '../BrpApi';
 import { FileApiClient } from '../FileApiClient';
@@ -9,15 +10,15 @@ if (process.env.VERBOSETESTS!='True') {
   global.console.log = jest.fn();
 }
 
-
 async function getStringFromFilePath(filePath: string): Promise<string> {
   return new Promise((res, rej) => {
-    fs.readFile(filePath, (err, data) => {
+    fs.readFile(path.join(__dirname, filePath), (err, data) => {
       if (err) {return rej(err);}
       return res(data.toString());
     });
   });
 }
+
 
 // This test doesn't run in CI by default, depends on unavailable secrets
 test('Mock api', async () => {

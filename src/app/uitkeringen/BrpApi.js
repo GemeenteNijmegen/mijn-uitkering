@@ -1,4 +1,4 @@
-const { ApiClient } = require('./ApiClient');
+const { ApiClient } = require('@gemeentenijmegen/apiclient');
 const { Bsn } = require('@gemeentenijmegen/utils');
 
 class BrpApi {
@@ -21,7 +21,7 @@ class BrpApi {
                 'error' : error.message
             }
             return data;
-        }
+}
     }
 }
 

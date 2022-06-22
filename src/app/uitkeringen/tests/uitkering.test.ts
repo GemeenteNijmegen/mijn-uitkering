@@ -3,10 +3,10 @@ import * as path from 'path';
 import { DynamoDBClient, GetItemCommandOutput } from '@aws-sdk/client-dynamodb';
 import { SecretsManagerClient, GetSecretValueCommandOutput } from '@aws-sdk/client-secrets-manager';
 import { SSMClient, GetParameterCommandOutput } from '@aws-sdk/client-ssm';
+import { ApiClient } from '@gemeentenijmegen/apiclient';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { mockClient } from 'jest-aws-client-mock';
-import { ApiClient } from '../ApiClient';
 import { uitkeringsRequestHandler } from '../uitkeringsRequestHandler';
 
 beforeAll(() => {
@@ -78,7 +78,8 @@ test('Returns 200', async () => {
       return data;
     });
   axiosMock.onPost().reply(200, returnData);
-  const client = new ApiClient();
+
+  const client = new ApiClient('test', 'test', 'test');
   const dynamoDBClient = new DynamoDBClient({});
   const result = await uitkeringsRequestHandler('session=12345', client, dynamoDBClient);
   expect(result.statusCode).toBe(200);
@@ -90,7 +91,8 @@ test('Shows overview page', async () => {
     SecretString: 'ditiseennepgeheim',
   };
   secretsMock.mockImplementation(() => output);
-  const client = new ApiClient();
+
+  const client = new ApiClient('test', 'test', 'test');
   const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
   const file = 'uitkering-12345678.xml';
   const filePath = path.join('responses', file);
@@ -112,7 +114,8 @@ test('Shows two uitkeringen page', async () => {
     SecretString: 'ditiseennepgeheim',
   };
   secretsMock.mockImplementation(() => output);
-  const client = new ApiClient();
+
+  const client = new ApiClient('test', 'test', 'test');
   const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
   const file = 'tweeuitkeringen.xml';
   const filePath = path.join('responses', file);
@@ -134,7 +137,8 @@ test('Shows empty page', async () => {
     SecretString: 'ditiseennepgeheim',
   };
   secretsMock.mockImplementation(() => output);
-  const client = new ApiClient();
+
+  const client = new ApiClient('test', 'test', 'test');
   const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
   const file = 'empty.xml';
   const filePath = path.join('responses', file);
@@ -156,7 +160,8 @@ test('Shows error page', async () => {
     SecretString: 'ditiseennepgeheim',
   };
   secretsMock.mockImplementation(() => output);
-  const client = new ApiClient();
+
+  const client = new ApiClient('test', 'test', 'test');
   const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
 
   axiosMock.onPost().reply(404);
@@ -166,7 +171,7 @@ test('Shows error page', async () => {
   fs.writeFile(path.join(__dirname, 'output', 'test-error.html'), result.body, () => {});
 });
 
-async function getStringFromFilePath(filePath: string) {
+async function getStringFromFilePath(filePath: string): Promise<string> {
   return new Promise((res, rej) => {
     fs.readFile(path.join(__dirname, filePath), (err, data) => {
       if (err) {return rej(err);}

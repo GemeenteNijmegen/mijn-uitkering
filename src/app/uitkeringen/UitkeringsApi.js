@@ -1,6 +1,6 @@
 const xml2js = require('xml2js');
 const ObjectMapper = require('object-mapper');
-const { ApiClient } = require('./ApiClient');
+const { ApiClient } = require('@gemeentenijmegen/apiclient');
 const { Bsn } = require('@gemeentenijmegen/utils');
 
 class UitkeringsApi {
