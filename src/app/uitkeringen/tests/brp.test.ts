@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { ApiClient } from '../ApiClient';
+import { ApiClient } from '@gemeentenijmegen/apiclient';
 import { BrpApi } from '../BrpApi';
 import { FileApiClient } from '../FileApiClient';
 
@@ -10,7 +10,7 @@ if (process.env.VERBOSETESTS!='True') {
 }
 
 
-async function getStringFromFilePath(filePath: string) {
+async function getStringFromFilePath(filePath: string): Promise<string> {
   return new Promise((res, rej) => {
     fs.readFile(filePath, (err, data) => {
       if (err) {return rej(err);}
