@@ -3,7 +3,7 @@ import { HttpRouteKey } from '@aws-cdk/aws-apigatewayv2-alpha';
 import { HttpLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
 import { aws_secretsmanager, Stack, aws_ssm as SSM, aws_kms } from 'aws-cdk-lib';
 import { ITable, Table } from 'aws-cdk-lib/aws-dynamodb';
-import { Function } from 'aws-cdk-lib/aws-lambda';
+import { Role } from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 import { ApiFunction } from './ApiFunction';
 import { Statics } from './statics';
@@ -44,11 +44,7 @@ export class UitkeringsApiStack extends Stack {
     const tlskeyParam = SSM.StringParameter.fromStringParameterName(this, 'tlskey', Statics.ssmMTLSClientCert);
     const tlsRootCAParam = SSM.StringParameter.fromStringParameterName(this, 'tlsrootca', Statics.ssmMTLSRootCA);
 
-    const monitoringLambdaArn = SSM.StringParameter.valueForStringParameter(this, Statics.ssmMonitoringLambdaArn);
-    const monitoringFunction = Function.fromFunctionAttributes(this, 'monitoring', {
-      functionArn: monitoringLambdaArn,
-      sameEnvironment: true,
-    });
+    const readOnlyRole = Role.fromRoleArn(this, 'readonly', SSM.StringParameter.valueForStringParameter(this, Statics.ssmReadOnlyRoleArn));
 
     const uitkeringenFunction = new ApiFunction(this, 'uitkeringen-function', {
       description: 'Uitkeringen-lambda voor de Mijn Uitkering-applicatie.',
@@ -62,7 +58,7 @@ export class UitkeringsApiStack extends Stack {
         UITKERING_API_URL: SSM.StringParameter.valueForStringParameter(this, Statics.ssmUitkeringsApiEndpointUrl),
         BRP_API_URL: SSM.StringParameter.valueForStringParameter(this, Statics.ssmBrpApiEndpointUrl),
       },
-      monitoredBy: monitoringFunction,
+      readOnlyRole,
     });
 
     secretMTLSPrivateKey.grantRead(uitkeringenFunction.lambda);
