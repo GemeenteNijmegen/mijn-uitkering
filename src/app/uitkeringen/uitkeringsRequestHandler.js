@@ -2,17 +2,7 @@ const { render } = require('./shared/render');
 const { UitkeringsApi } = require('./UitkeringsApi');
 const { BrpApi } = require('./BrpApi');
 const { Session } = require('@gemeentenijmegen/session');
-
-
-function redirectResponse(location, code = 302) {
-    return {
-        'statusCode': code,
-        'body': '',
-        'headers': { 
-            'Location': location
-        }
-    }
-}
+const { Response } = require('@gemeentenijmegen/apigateway-http/lib/V2/Response');
 
 exports.uitkeringsRequestHandler = async (cookies, apiClient, dynamoDBClient) => {
     if(!cookies || !apiClient || !dynamoDBClient) { throw new Error('all handler params are required'); }
@@ -29,7 +19,7 @@ exports.uitkeringsRequestHandler = async (cookies, apiClient, dynamoDBClient) =>
         return response;
     } 
     console.timeEnd('request');
-    return redirectResponse('/login');
+    return Response.redirect('/login');
 }
 
 async function handleLoggedinRequest(session, apiClient) {
@@ -45,14 +35,7 @@ async function handleLoggedinRequest(session, apiClient) {
 
     const html = await renderHtml(data);
 
-    response = {
-        'statusCode': 200,
-        'body': html,
-        'headers': {
-            'Content-type': 'text/html'
-        }
-    };
-    return response;
+    return Response.html(html, 200, session.getCookie());
 }
 
 async function renderHtml(data) {
