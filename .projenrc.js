@@ -1,5 +1,5 @@
-const { awscdk } = require('projen');
-const project = new awscdk.AwsCdkTypeScriptApp({
+const { GemeenteNijmegenCdkApp } = require('@gemeentenijmegen/modules-projen');
+const project = new GemeenteNijmegenCdkApp({
   cdkVersion: '2.54.0',
   defaultReleaseBranch: 'production',
   release: true,
@@ -7,6 +7,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   license: 'EUPL-1.2',
   name: 'mijnuitkering',
   deps: [
+    '@gemeentenijmegen/modules-projen',
     'dotenv',
     '@aws-cdk/aws-apigatewayv2-alpha',
     '@aws-cdk/aws-apigatewayv2-integrations-alpha',
