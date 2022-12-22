@@ -30,6 +30,6 @@ exports.handler = async (event, context) => {
     
     } catch (err) {
         console.error(err);
-        Response.error(500);
+        return Response.error(500);
     }
 };
