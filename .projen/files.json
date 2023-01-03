@@ -8,6 +8,7 @@
     ".github/workflows/emergency.yml",
     ".github/workflows/pull-request-lint.yml",
     ".github/workflows/release.yml",
+    ".github/workflows/repository-validation.yml",
     ".github/workflows/upgrade-acceptance.yml",
     ".gitignore",
     ".mergify.yml",
