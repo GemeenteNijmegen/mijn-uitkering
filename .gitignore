@@ -64,4 +64,3 @@ junit.xml
 .parcel-cache/
 !/.github/workflows/emergency.yml
 !/.github/workflows/auto-merge.yml
-!/.github/workflows/repository-validation.yml

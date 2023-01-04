@@ -27,6 +27,8 @@ jobs:
         run: npx projen build
       - name: CloudFormation lint
         run: npx projen lint
+      - name: Check repository configuration
+        run: node ./.github/workflows/validate-repository.js
       - name: Find mutations
         id: self_mutation
         run: |-
