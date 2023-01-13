@@ -190,6 +190,6 @@ describe('Unexpected requests', () => {
 
     const result = await uitkeringsRequestHandler('', client, dynamoDBClient);
     expect(result.statusCode).toBe(302);
-    expect(result.headers['Location']).toMatch('/login');
+    expect(result.headers.Location).toMatch('/login');
   });
 });
