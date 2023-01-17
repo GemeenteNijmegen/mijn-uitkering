@@ -1,6 +1,5 @@
 const { render } = require('./shared/render');
 const { UitkeringsApi } = require('./UitkeringsApi');
-const { BrpApi } = require('./BrpApi');
 const { Session } = require('@gemeentenijmegen/session');
 const { Response } = require('@gemeentenijmegen/apigateway-http/lib/V2/Response');
 
@@ -23,14 +22,12 @@ exports.uitkeringsRequestHandler = async (cookies, apiClient, dynamoDBClient) =>
 }
 
 async function handleLoggedinRequest(session, apiClient) {
-    console.timeLog('request', 'Api Client init');
     const bsn = session.getValue('bsn');
-    const brpApi = new BrpApi(apiClient);
-    console.timeLog('request', 'Brp Api');
+    console.timeLog('request', 'Api Client init');
     const uitkeringsApi = new UitkeringsApi(apiClient);
     console.timeLog('request', 'UitkeringsApi');
-    const [data, brpData] = await Promise.all([uitkeringsApi.getUitkeringen(bsn), brpApi.getBrpData(bsn)]);
-    data.volledigenaam = brpData?.Persoon?.Persoonsgegevens?.Naam ? brpData.Persoon.Persoonsgegevens.Naam : 'Onbekende gebruiker';
+    const data = await uitkeringsApi.getUitkeringen(bsn);
+    data.volledigenaam = session.getValue('username');
     data.multipleUitkeringen = (data?.uitkeringen?.length > 1);
 
     const html = await renderHtml(data);
