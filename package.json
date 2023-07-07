@@ -54,6 +54,7 @@
     "@aws-cdk/aws-apigatewayv2-alpha": "^2.77.0-alpha.0",
     "@aws-cdk/aws-apigatewayv2-integrations-alpha": "^2.77.0-alpha.0",
     "@aws-solutions-constructs/aws-lambda-dynamodb": "2.39.0",
+    "@gemeentenijmegen/aws-constructs": "^0.0.4",
     "@gemeentenijmegen/projen-project-type": "^1.5.0",
     "aws-cdk-lib": "^2.54.0",
     "constructs": "^10.0.5",
