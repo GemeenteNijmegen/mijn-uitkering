@@ -6,6 +6,7 @@ const project = new GemeenteNijmegenCdkApp({
   name: 'mijnuitkering',
   deps: [
     '@gemeentenijmegen/projen-project-type',
+    '@gemeentenijmegen/aws-constructs',
     'dotenv',
     '@aws-cdk/aws-apigatewayv2-alpha',
     '@aws-cdk/aws-apigatewayv2-integrations-alpha',
