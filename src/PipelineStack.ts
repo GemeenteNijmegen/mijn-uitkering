@@ -9,7 +9,7 @@ import { PermissionsBoundaryAspect } from '@gemeentenijmegen/aws-constructs';
 export interface PipelineStackProps extends StackProps, Configurable {}
 
 export class PipelineStack extends Stack {
-  branchName: string;
+
   constructor(scope: Construct, id: string, props: PipelineStackProps) {
     super(scope, id, props);
     Tags.of(this).add('cdkManaged', 'yes');
@@ -17,26 +17,31 @@ export class PipelineStack extends Stack {
     if(props.configuration.envIsInNewLandingZone){
       Aspects.of(this).add(new PermissionsBoundaryAspect());
     }
-    this.branchName = props.configuration.branchName;
-    const pipeline = this.pipeline();
-    pipeline.addStage(new ParameterStage(this, 'mijn-uitkering-parameters', { env: props.configuration.deploymentEnvironment, configuration: props.configuration }));
-    pipeline.addStage(new UitkeringsApiStage(this, 'mijn-uitkering-api', { env: props.configuration.deploymentEnvironment, configuration: props.configuration }));
+    const pipeline = this.pipeline(props);
+    pipeline.addStage(new ParameterStage(this, 'mijn-uitkering-parameters', { 
+      env: props.configuration.deploymentEnvironment, 
+      configuration: props.configuration 
+    }));
+    pipeline.addStage(new UitkeringsApiStage(this, 'mijn-uitkering-api', { 
+      env: props.configuration.deploymentEnvironment, 
+      configuration: props.configuration 
+    }));
   }
 
-  pipeline(): pipelines.CodePipeline {
+  pipeline(props: PipelineStackProps): pipelines.CodePipeline {
     const connectionArn = new CfnParameter(this, 'connectionArn');
-    const source = pipelines.CodePipelineSource.connection('GemeenteNijmegen/mijn-uitkering', this.branchName, {
+    const source = pipelines.CodePipelineSource.connection('GemeenteNijmegen/mijn-uitkering', props.configuration.branchName, {
       connectionArn: connectionArn.valueAsString,
     });
-    const pipeline = new pipelines.CodePipeline(this, `mijnuitkering-${this.branchName}`, {
-      pipelineName: `mijnuitkering-${this.branchName}`,
+    const pipeline = new pipelines.CodePipeline(this, props.configuration.pipelineName, {
+      pipelineName: props.configuration.pipelineName,
       dockerEnabledForSelfMutation: true,
       dockerEnabledForSynth: true,
       crossAccountKeys: true,
       synth: new pipelines.ShellStep('Synth', {
         input: source,
         env: {
-          BRANCH_NAME: this.branchName,
+          BRANCH_NAME: props.configuration.branchName,
         },
         commands: [
           'yarn install --frozen-lockfile',
