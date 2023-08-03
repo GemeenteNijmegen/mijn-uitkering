@@ -3,10 +3,9 @@ import { Aspects, Stage, StageProps, Tags } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { Statics } from './statics';
 import { UitkeringsApiStack } from './UitkeringsApiStack';
+import { Configurable } from './Configuration';
 
-export interface UitkeringsApiStageProps extends StageProps {
-  branch: string;
-}
+export interface UitkeringsApiStageProps extends StageProps, Configurable {}
 
 /**
  * Stage responsible for the API Gateway and lambdas
@@ -16,7 +15,9 @@ export class UitkeringsApiStage extends Stage {
     super(scope, id, props);
     Tags.of(this).add('cdkManaged', 'yes');
     Tags.of(this).add('Project', Statics.projectName);
-    Aspects.of(this).add(new PermissionsBoundaryAspect());
+    if(props.configuration.envIsInNewLandingZone){
+      Aspects.of(this).add(new PermissionsBoundaryAspect());
+    }
 
     new UitkeringsApiStack(this, 'uitkerings-api');
   }

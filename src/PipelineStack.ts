@@ -1,9 +1,10 @@
-import { Stack, StackProps, Tags, pipelines, CfnParameter } from 'aws-cdk-lib';
+import { Stack, StackProps, Tags, pipelines, CfnParameter, Aspects } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { Configurable } from './Configuration';
 import { ParameterStage } from './ParameterStage';
 import { Statics } from './statics';
 import { UitkeringsApiStage } from './UitkeringsApiStage';
+import { PermissionsBoundaryAspect } from '@gemeentenijmegen/aws-constructs';
 
 export interface PipelineStackProps extends StackProps, Configurable {}
 
@@ -13,10 +14,13 @@ export class PipelineStack extends Stack {
     super(scope, id, props);
     Tags.of(this).add('cdkManaged', 'yes');
     Tags.of(this).add('Project', Statics.projectName);
+    if(props.configuration.envIsInNewLandingZone){
+      Aspects.of(this).add(new PermissionsBoundaryAspect());
+    }
     this.branchName = props.configuration.branchName;
     const pipeline = this.pipeline();
-    pipeline.addStage(new ParameterStage(this, 'mijn-uitkering-parameters', { env: props.configuration.deploymentEnvironment }));
-    pipeline.addStage(new UitkeringsApiStage(this, 'mijn-uitkering-api', { env: props.configuration.deploymentEnvironment, branch: this.branchName }));
+    pipeline.addStage(new ParameterStage(this, 'mijn-uitkering-parameters', { env: props.configuration.deploymentEnvironment, configuration: props.configuration }));
+    pipeline.addStage(new UitkeringsApiStage(this, 'mijn-uitkering-api', { env: props.configuration.deploymentEnvironment, configuration: props.configuration }));
   }
 
   pipeline(): pipelines.CodePipeline {
