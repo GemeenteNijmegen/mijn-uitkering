@@ -1,9 +1,6 @@
 import { App } from 'aws-cdk-lib';
 import * as Dotenv from 'dotenv';
 import { PipelineStack } from './PipelineStack';
-import { PipelineStackAcceptance } from './PipelineStackAcceptance';
-import { PipelineStackDevelopment } from './PipelineStackDevelopment';
-import { PipelineStackProduction } from './PipelineStackProduction';
 
 // for development, use sandbox account
 const deploymentEnvironment = {
@@ -46,7 +43,7 @@ const app = new App();
 
 
 if ('BRANCH_NAME' in process.env == false || process.env.BRANCH_NAME == 'development') {
-  new PipelineStackDevelopment(app, 'uitkering-pipeline-development',
+  new PipelineStack(app, 'uitkering-pipeline-development',
     {
       env: deploymentEnvironment,
       branchName: 'development',
@@ -54,7 +51,7 @@ if ('BRANCH_NAME' in process.env == false || process.env.BRANCH_NAME == 'develop
     },
   );
 } else if (process.env.BRANCH_NAME == 'acceptance') {
-  new PipelineStackAcceptance(app, 'uitkering-pipeline-acceptance',
+  new PipelineStack(app, 'uitkering-pipeline-acceptance',
     {
       env: deploymentEnvironment,
       branchName: 'acceptance',
@@ -70,7 +67,7 @@ if ('BRANCH_NAME' in process.env == false || process.env.BRANCH_NAME == 'develop
     },
   );
 } else if (process.env.BRANCH_NAME == 'production') {
-  new PipelineStackProduction(app, 'uitkering-pipeline-production',
+  new PipelineStack(app, 'uitkering-pipeline-production',
     {
       env: deploymentEnvironment,
       branchName: 'production',
