@@ -2,8 +2,23 @@ import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import * as Dotenv from 'dotenv';
 import { ParameterStack } from '../src/ParameterStage';
-import { PipelineStackDevelopment } from '../src/PipelineStackDevelopment';
+import { PipelineStack } from '../src/PipelineStack';
 import { UitkeringsApiStack } from '../src/UitkeringsApiStack';
+import { Configuration } from '../src/Configuration';
+
+const env = {
+  account: '123456789012',
+  region: 'eu-west-1',
+}
+
+const config: Configuration = {
+  branchName: 'testing',
+  buildEnvironment: env,
+  deploymentEnvironment: env,
+  envIsInNewLandingZone: true,
+  pipelineName: 'pipeline-testing',
+  pipelineStackCdkName: 'testing-pipeline-stack', 
+}
 
 beforeAll(() => {
   Dotenv.config();
@@ -16,14 +31,14 @@ beforeAll(() => {
 
 test('Snapshot', () => {
   const app = new App();
-  const stack = new PipelineStackDevelopment(app, 'test', { env: { account: 'test', region: 'eu-west-1' }, branchName: 'development', deployToEnvironment: { account: 'test', region: 'eu-west-1' } });
+  const stack = new PipelineStack(app, 'test', { env, configuration: config });
   const template = Template.fromStack(stack);
   expect(template.toJSON()).toMatchSnapshot();
 });
 
 test('MainPipelineExists', () => {
   const app = new App();
-  const stack = new PipelineStackDevelopment(app, 'test', { env: { account: 'test', region: 'eu-west-1' }, branchName: 'development', deployToEnvironment: { account: 'test', region: 'eu-west-1' } });
+  const stack = new PipelineStack(app, 'test', { env, configuration: config });
   const template = Template.fromStack(stack);
   template.resourceCountIs('AWS::CodePipeline::Pipeline', 1);
 });
