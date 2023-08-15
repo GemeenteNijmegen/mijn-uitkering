@@ -15,7 +15,6 @@ const config: Configuration = {
   branchName: 'testing',
   buildEnvironment: env,
   deploymentEnvironment: env,
-  envIsInNewLandingZone: true,
   pipelineName: 'pipeline-testing',
   pipelineStackCdkName: 'testing-pipeline-stack', 
 }
