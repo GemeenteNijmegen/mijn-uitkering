@@ -1,6 +1,7 @@
 const { ApiClient } = require('@gemeentenijmegen/apiclient');
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const { uitkeringsRequestHandler } = require("./uitkeringsRequestHandler");
+import { APIGatewayProxyEventV2 } from 'aws-lambda';
 const { Response } = require('@gemeentenijmegen/apigateway-http/lib/V2/Response');
 
 const dynamoDBClient = new DynamoDBClient();
@@ -16,13 +17,13 @@ async function init() {
 
 const initPromise = init();
 
-function parseEvent(event) {
+function parseEvent(event: APIGatewayProxyEventV2) {
     return { 
         'cookies': event?.cookies?.join(';'),
     };
 }
 
-exports.handler = async (event, context) => {
+exports.handler = async (event: any, _context: any) => {
     try {
         const params = parseEvent(event);
         await initPromise;

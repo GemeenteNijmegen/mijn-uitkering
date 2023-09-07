@@ -1,9 +1,14 @@
-const { render } = require('./shared/render');
-const { UitkeringsApi } = require('./UitkeringsApi');
-const { Session } = require('@gemeentenijmegen/session');
-const { Response } = require('@gemeentenijmegen/apigateway-http/lib/V2/Response');
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { ApiClient } from "@gemeentenijmegen/apiclient";
 
-exports.uitkeringsRequestHandler = async (cookies, apiClient, dynamoDBClient) => {
+import { render } from '../../shared/render';
+import { UitkeringsApi } from './UitkeringsApi';
+import { Session } from '@gemeentenijmegen/session';
+import { Response } from '@gemeentenijmegen/apigateway-http/lib/V2/Response';
+import * as template from './templates/uitkeringen.mustache';
+import * as uitkering from './templates/uitkerings-item.mustache'
+
+export async function uitkeringsRequestHandler(cookies: string, apiClient: ApiClient, dynamoDBClient: DynamoDBClient) {
     if(!apiClient || !dynamoDBClient) { throw new Error('all handler params are required'); }
     console.time('request');
     console.timeLog('request', 'start request');
@@ -16,12 +21,12 @@ exports.uitkeringsRequestHandler = async (cookies, apiClient, dynamoDBClient) =>
         const response = await handleLoggedinRequest(session, apiClient);
         console.timeEnd('request');
         return response;
-    } 
+    }
     console.timeEnd('request');
     return Response.redirect('/login');
 }
 
-async function handleLoggedinRequest(session, apiClient) {
+async function handleLoggedinRequest(session: Session, apiClient: ApiClient) {
     const bsn = session.getValue('bsn');
     console.timeLog('request', 'Api Client init');
     const uitkeringsApi = new UitkeringsApi(apiClient);
@@ -35,16 +40,11 @@ async function handleLoggedinRequest(session, apiClient) {
     return Response.html(html, 200, session.getCookie());
 }
 
-async function renderHtml(data) {
+async function renderHtml(data: any) {
     data.title = 'Uitkeringen';
     data.shownav = true;
 
     // render page
-    const html = await render(data, __dirname + '/templates/uitkeringen.mustache', {
-        'header': __dirname + '/shared/header.mustache',
-        'footer': __dirname + '/shared/footer.mustache',
-        'uitkering': __dirname + '/templates/uitkerings-item.mustache'
-    });
+    const html = await render(data, template.default, { uitkering: uitkering.default });
     return html;
 }
-

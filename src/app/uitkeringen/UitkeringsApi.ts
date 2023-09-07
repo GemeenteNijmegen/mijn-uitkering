@@ -1,18 +1,21 @@
-const xml2js = require('xml2js');
-const ObjectMapper = require('object-mapper');
-const { ApiClient } = require('@gemeentenijmegen/apiclient');
-const { Bsn } = require('@gemeentenijmegen/utils');
+import { ApiClient } from "@gemeentenijmegen/apiclient";
 
-class UitkeringsApi {
-    constructor(client) {
+import xml2js from 'xml2js';
+import ObjectMapper from 'object-mapper';
+import { Bsn } from '@gemeentenijmegen/utils';
+
+export class UitkeringsApi {
+    private client: ApiClient;
+    private endpoint: string;
+    constructor(client: ApiClient) {
         this.client = client ? client : new ApiClient();
         this.endpoint = process.env.UITKERING_API_URL ? process.env.UITKERING_API_URL : 'mijnNijmegenData';
     }
 
-    async getUitkeringen(bsn) {
+    async getUitkeringen(bsn: string) {
         try {
             const aBsn = new Bsn(bsn);
-            const data = await this.client.requestData(this.endpoint, this.body(aBsn.bsn), {
+            const data = await this.client.postData(this.endpoint, this.body(aBsn.bsn), {
                 'Content-type': 'text/xml',
                 'SoapAction': 'https://data-test.nijmegen.nl/mijnNijmegenData/getData'
             });
@@ -24,7 +27,7 @@ class UitkeringsApi {
                 return uitkeringen;
             }
             return {'uitkeringen': []};
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
             const data = {
                 'error' : error.message
@@ -42,7 +45,7 @@ class UitkeringsApi {
      * @param {string} bsn bsn for person information should be returned for
      * @returns string an XML-payload for the request body
      */
-    body(bsn) {
+    body(bsn: string) {
         return `<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
             <soap:Body>
                 <ns2:dataRequest xmlns:ns2="https://data-test.nijmegen.nl/mijnNijmegenData/">
@@ -53,13 +56,13 @@ class UitkeringsApi {
         </soap:Envelope>`;
     }
 
-    mapUitkeringsRows(object) {
+    mapUitkeringsRows(object: any) {
         const map = {
             'soap:Envelope.soap:Body[0].mij:dataResponse[0].groups[].group[0]': {
                 key: 'uitkeringen',
-                transform: ((value) => {
+                transform: ((value: any) => {
                     if(!value) { return null; }
-                    const groups = value.filter((group) => {
+                    const groups = value.filter((group: any) => {
                         return group.groupName[0] == 'uitkeringen';
                     });
                     return groups[0].rows[0]
@@ -69,7 +72,7 @@ class UitkeringsApi {
         return ObjectMapper(object, map);
     }
 
-    mapUitkering(object) {
+    mapUitkering(object: any) {
         const map = {
             'uitkeringen.row[].pageName[0]': 'uitkeringen[].type',
             'uitkeringen.row[].fields[0].field[].name[0]': 'uitkeringen[].fields[].label',
@@ -78,10 +81,10 @@ class UitkeringsApi {
         return ObjectMapper(object, map);
     }
 
-    addFieldsByName(uitkeringen) {
-        uitkeringen.uitkeringen.forEach((uitkering) => {
-            const fieldsByName = uitkering.fields?.map((field) => {
-                let obj = {};
+    addFieldsByName(uitkeringen: any) {
+        uitkeringen.uitkeringen.forEach((uitkering: any) => {
+            const fieldsByName = uitkering.fields?.map((field: any) => {
+                let obj: any = {};
                 let label = field.label.toLowerCase().replace(/\s+/g, '-');
                 obj[label] = field.value;
                 return obj;
@@ -92,5 +95,3 @@ class UitkeringsApi {
         return uitkeringen;
     }
 }
-
-exports.UitkeringsApi = UitkeringsApi;

@@ -1,14 +1,55 @@
 import fs from 'fs';
 import path from 'path';
 import { ApiClient } from '@gemeentenijmegen/apiclient';
-import { FileApiClient } from '../FileApiClient';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
+import { mockClient } from 'jest-aws-client-mock';
 import { UitkeringsApi } from '../UitkeringsApi';
+import { GetSecretValueCommandOutput, SecretsManagerClient } from '@aws-sdk/client-secrets-manager';
+import { GetParameterCommandOutput, SSMClient } from '@aws-sdk/client-ssm';
 
 if (process.env.VERBOSETESTS!='True') {
   global.console.error = jest.fn();
   global.console.time = jest.fn();
   global.console.log = jest.fn();
 }
+
+
+beforeAll(() => {
+  // Set env variables
+  process.env.SESSION_TABLE = 'mijnnijmegen-sessions';
+  process.env.AUTH_URL_BASE = 'https://authenticatie-accp.nijmegen.nl';
+  process.env.APPLICATION_URL_BASE = 'https://testing.example.com/';
+  process.env.CLIENT_SECRET_ARN = '123';
+  process.env.OIDC_CLIENT_ID = '1234';
+  process.env.OIDC_SCOPE = 'openid';
+  process.env.BRP_API_URL = 'https://localhost/brp';
+
+  process.env.MTLS_PRIVATE_KEY_ARN = 'testarn';
+
+  const secretsOutput: GetSecretValueCommandOutput = {
+    $metadata: {},
+    SecretString: 'test',
+  };
+  secretsMock.mockImplementation(() => secretsOutput);
+  const ssmOutput: GetParameterCommandOutput = {
+    $metadata: {},
+    Parameter: {
+      Value: 'test',
+    },
+  };
+
+  secretsMock.mockImplementation(() => secretsOutput);
+  parameterStoreMock.mockImplementation(() => ssmOutput);
+});
+
+
+const axiosMock = new MockAdapter(axios);
+const secretsMock = mockClient(SecretsManagerClient);
+const parameterStoreMock = mockClient(SSMClient);
+
+process.env.MTLS_PRIVATE_KEY_ARN = 'testarn';
+process.env.UITKERING_API_URL = 'http://localhost/mijnNijmegenData';
 
 async function getStringFromFilePath(filePath: string): Promise<string> {
   return new Promise((res, rej) => {
@@ -19,10 +60,23 @@ async function getStringFromFilePath(filePath: string): Promise<string> {
   });
 }
 
+beforeEach(() => {
+  axiosMock.reset();
+  secretsMock.mockReset();
+});
+
 test('returns one uitkering', async () => {
-  const client = new FileApiClient();
-  let api = new UitkeringsApi(client);
+  const apiClient = new ApiClient('', '' , '');
+  let api = new UitkeringsApi(apiClient);
+  const file = 'uitkering-12345678.xml';
+  const filePath = path.join('responses', file);
+  const returnData = await getStringFromFilePath(filePath)
+    .then((data: any) => {
+      return data;
+    });
+  axiosMock.onPost().reply(200, returnData);
   const result = await api.getUitkeringen('00000000');
+  expect(axiosMock.history.post.length).toBe(1);
   expect(result.uitkeringen).toHaveLength(1);
   expect(result.uitkeringen[0].fields).toBeInstanceOf(Array);
 });

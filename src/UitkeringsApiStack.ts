@@ -7,6 +7,7 @@ import { Role } from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 import { ApiFunction } from './ApiFunction';
 import { Statics } from './statics';
+import { UitkeringFunction } from './app/uitkeringen/uitkering-function';
 
 export class UitkeringsApiStack extends Stack {
   private sessionsTable: ITable;
@@ -59,6 +60,7 @@ export class UitkeringsApiStack extends Stack {
         BRP_API_URL: SSM.StringParameter.valueForStringParameter(this, Statics.ssmBrpApiEndpointUrl),
       },
       readOnlyRole,
+      apiFunction: UitkeringFunction,
     });
 
     secretMTLSPrivateKey.grantRead(uitkeringenFunction.lambda);

@@ -147,7 +147,8 @@
         "devDependencies": [
           "**/src/app/uitkeringen/tests/**",
           "**//test/**",
-          "**//build-tools/**"
+          "**//build-tools/**",
+          "src/app/uitkeringen/uitkering.lambda.ts"
         ],
         "optionalDependencies": false,
         "peerDependencies": true
