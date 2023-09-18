@@ -6,8 +6,8 @@ import { ITable, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { Role } from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 import { ApiFunction } from './ApiFunction';
-import { Statics } from './statics';
 import { UitkeringFunction } from './app/uitkeringen/uitkering-function';
+import { Statics } from './statics';
 
 export class UitkeringsApiStack extends Stack {
   private sessionsTable: ITable;

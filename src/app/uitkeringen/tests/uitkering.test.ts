@@ -106,7 +106,7 @@ describe('Loading the uitkeringspagina', () => {
     const result = await uitkeringsRequestHandler('session=12345', client, dynamoDBClient);
     expect(result.body).toMatch('Mijn Uitkering');
     expect(result.body).toMatch('Participatiewet');
-    if(!result.body) {
+    if (!result.body) {
       return;
     }
     fs.writeFile(path.join(__dirname, 'output', 'test.html'), result.body, () => {});
@@ -132,7 +132,7 @@ describe('Loading the uitkeringspagina', () => {
     const result = await uitkeringsRequestHandler('session=12345', client, dynamoDBClient);
     expect(result.body).toMatch('Mijn Uitkering');
     expect(result.body).toMatch('Participatiewet');
-    if(!result.body) {
+    if (!result.body) {
       return;
     }
     fs.writeFile(path.join(__dirname, 'output', 'test-twee.html'), result.body, () => {});
@@ -158,7 +158,7 @@ describe('Loading the uitkeringspagina', () => {
     const result = await uitkeringsRequestHandler('session=12345', client, dynamoDBClient);
     expect(result.body).toMatch('Mijn Uitkering');
     expect(result.body).toMatch('U heeft geen lopende uitkeringen');
-    if(!result.body) {
+    if (!result.body) {
       return;
     }
     fs.writeFile(path.join(__dirname, 'output', 'test-empty.html'), result.body, () => {});
@@ -179,7 +179,7 @@ describe('Loading the uitkeringspagina', () => {
     const result = await uitkeringsRequestHandler('session=12345', client, dynamoDBClient);
     expect(result.body).toMatch('Mijn Uitkering');
     expect(result.body).toMatch('Er is iets misgegaan');
-    if(!result.body) {
+    if (!result.body) {
       return;
     }
     fs.writeFile(path.join(__dirname, 'output', 'test-error.html'), result.body, () => {});

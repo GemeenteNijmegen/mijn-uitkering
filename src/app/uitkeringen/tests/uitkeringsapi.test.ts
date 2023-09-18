@@ -1,12 +1,12 @@
 import fs from 'fs';
 import path from 'path';
+import { GetSecretValueCommandOutput, SecretsManagerClient } from '@aws-sdk/client-secrets-manager';
+import { GetParameterCommandOutput, SSMClient } from '@aws-sdk/client-ssm';
 import { ApiClient } from '@gemeentenijmegen/apiclient';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { mockClient } from 'jest-aws-client-mock';
 import { UitkeringsApi } from '../UitkeringsApi';
-import { GetSecretValueCommandOutput, SecretsManagerClient } from '@aws-sdk/client-secrets-manager';
-import { GetParameterCommandOutput, SSMClient } from '@aws-sdk/client-ssm';
 
 if (process.env.VERBOSETESTS!='True') {
   global.console.error = jest.fn();
@@ -66,8 +66,6 @@ beforeEach(() => {
 });
 
 test('returns one uitkering', async () => {
-  const apiClient = new ApiClient('', '' , '');
-  let api = new UitkeringsApi(apiClient);
   const file = 'uitkering-12345678.xml';
   const filePath = path.join('responses', file);
   const returnData = await getStringFromFilePath(filePath)
@@ -75,6 +73,8 @@ test('returns one uitkering', async () => {
       return data;
     });
   axiosMock.onPost().reply(200, returnData);
+  const apiClient = new ApiClient('a', 'n', 'c');
+  let api = new UitkeringsApi(apiClient);
   const result = await api.getUitkeringen('00000000');
   expect(axiosMock.history.post.length).toBe(1);
   expect(result.uitkeringen).toHaveLength(1);

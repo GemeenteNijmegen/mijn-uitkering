@@ -33,6 +33,7 @@ const project = new GemeenteNijmegenCdkApp({
     'dotenv',
     'jest-aws-client-mock',
     'axios-mock-adapter',
+    '@types/aws-lambda',
   ], /* Build dependencies for this module. */
   mutableBuild: true,
   jestOptions: {
