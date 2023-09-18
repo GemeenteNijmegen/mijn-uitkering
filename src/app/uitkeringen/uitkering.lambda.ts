@@ -19,7 +19,7 @@ const initPromise = init();
 
 function parseEvent(event: APIGatewayProxyEventV2) {
   return {
-    cookies: event?.cookies?.join(';'),
+    cookies: event?.cookies?.join(';') ?? '',
   };
 }
 
