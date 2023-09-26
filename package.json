@@ -60,7 +60,7 @@
     "@aws-cdk/aws-apigatewayv2-integrations-alpha": "^2.97.0-alpha.0",
     "@aws-sdk/client-dynamodb": "^3.418.0",
     "@aws-sdk/client-secrets-manager": "^3.418.0",
-    "@aws-sdk/client-ssm": "^3.418.0",
+    "@aws-sdk/client-ssm": "^3.419.0",
     "@aws-solutions-constructs/aws-lambda-dynamodb": "2.44.0",
     "@gemeentenijmegen/apiclient": "^0.0.8",
     "@gemeentenijmegen/apigateway-http": "^0.0.7",
