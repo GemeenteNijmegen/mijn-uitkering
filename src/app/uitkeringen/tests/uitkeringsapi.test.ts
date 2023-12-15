@@ -109,7 +109,7 @@ test('Http Api', async () => {
         </soap:Body>
     </soap:Envelope>`;
 
-  const result = await client.requestData(process.env.UITKERING_API_URL, body, {
+  const result = await client.postData(process.env.UITKERING_API_URL, body, {
     'Content-type': 'text/xml',
     'SoapAction': process.env.UITKERING_API_URL + '/getData',
   });
@@ -145,7 +145,7 @@ test('Http Api No result', async () => {
         </soap:Body>
     </soap:Envelope>`;
 
-  const result = await client.requestData(process.env.UITKERING_API_URL, body, {
+  const result = await client.postData(process.env.UITKERING_API_URL, body, {
     'Content-type': 'text/xml',
     'SoapAction': process.env.UITKERING_API_URL + '/getData',
   });
