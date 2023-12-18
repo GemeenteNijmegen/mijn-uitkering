@@ -6,6 +6,7 @@ import { ITable, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { Role } from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 import { ApiFunction } from './ApiFunction';
+import { UitkeringFunction } from './app/uitkeringen/uitkering-function';
 import { Statics } from './statics';
 
 export class UitkeringsApiStack extends Stack {
@@ -59,6 +60,7 @@ export class UitkeringsApiStack extends Stack {
         BRP_API_URL: SSM.StringParameter.valueForStringParameter(this, Statics.ssmBrpApiEndpointUrl),
       },
       readOnlyRole,
+      apiFunction: UitkeringFunction,
     });
 
     secretMTLSPrivateKey.grantRead(uitkeringenFunction.lambda);
