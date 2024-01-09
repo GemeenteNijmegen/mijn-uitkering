@@ -47,6 +47,10 @@ const secretsMock = mockClient(SecretsManagerClient);
 const axiosMock = new MockAdapter(axios);
 const parameterStoreMock = mockClient(SSMClient);
 
+const apiClient = new ApiClient('test', 'test', 'test');
+const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
+
+const requestHandler = new uitkeringsRequestHandler({ apiClient, dynamoDBClient, showZaken: true });
 beforeEach(() => {
   ddbMock.mockReset();
   secretsMock.mockReset();
@@ -81,9 +85,7 @@ describe('Loading the uitkeringspagina', () => {
       });
     axiosMock.onPost().reply(200, returnData);
 
-    const client = new ApiClient('test', 'test', 'test');
-    const dynamoDBClient = new DynamoDBClient({});
-    const result = await uitkeringsRequestHandler('session=12345', client, dynamoDBClient);
+    const result = await requestHandler.handleRequest('session=12345');
     expect(result.statusCode).toBe(200);
   });
 
@@ -94,8 +96,6 @@ describe('Loading the uitkeringspagina', () => {
     };
     secretsMock.mockImplementation(() => output);
 
-    const client = new ApiClient('test', 'test', 'test');
-    const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
     const file = 'uitkering-12345678.xml';
     const filePath = path.join('responses', file);
     const returnData = await getStringFromFilePath(filePath)
@@ -103,7 +103,7 @@ describe('Loading the uitkeringspagina', () => {
         return data;
       });
     axiosMock.onPost().reply(200, returnData);
-    const result = await uitkeringsRequestHandler('session=12345', client, dynamoDBClient);
+    const result = await requestHandler.handleRequest('session=12345');
     expect(result.body).toMatch('Mijn Uitkering');
     expect(result.body).toMatch('Participatiewet');
     if (!result.body) {
@@ -120,8 +120,6 @@ describe('Loading the uitkeringspagina', () => {
     };
     secretsMock.mockImplementation(() => output);
 
-    const client = new ApiClient('test', 'test', 'test');
-    const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
     const file = 'tweeuitkeringen.xml';
     const filePath = path.join('responses', file);
     const returnData = await getStringFromFilePath(filePath)
@@ -129,7 +127,7 @@ describe('Loading the uitkeringspagina', () => {
         return data;
       });
     axiosMock.onPost().reply(200, returnData);
-    const result = await uitkeringsRequestHandler('session=12345', client, dynamoDBClient);
+    const result = await requestHandler.handleRequest('session=12345');
     expect(result.body).toMatch('Mijn Uitkering');
     expect(result.body).toMatch('Participatiewet');
     if (!result.body) {
@@ -146,8 +144,6 @@ describe('Loading the uitkeringspagina', () => {
     };
     secretsMock.mockImplementation(() => output);
 
-    const client = new ApiClient('test', 'test', 'test');
-    const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
     const file = 'empty.xml';
     const filePath = path.join('responses', file);
     const returnData = await getStringFromFilePath(filePath)
@@ -155,7 +151,7 @@ describe('Loading the uitkeringspagina', () => {
         return data;
       });
     axiosMock.onPost().reply(200, returnData);
-    const result = await uitkeringsRequestHandler('session=12345', client, dynamoDBClient);
+    const result = await requestHandler.handleRequest('session=12345');
     expect(result.body).toMatch('Mijn Uitkering');
     expect(result.body).toMatch('U heeft geen lopende uitkeringen');
     if (!result.body) {
@@ -172,11 +168,8 @@ describe('Loading the uitkeringspagina', () => {
     };
     secretsMock.mockImplementation(() => output);
 
-    const client = new ApiClient('test', 'test', 'test');
-    const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
-
     axiosMock.onPost().reply(404);
-    const result = await uitkeringsRequestHandler('session=12345', client, dynamoDBClient);
+    const result = await requestHandler.handleRequest('session=12345');
     expect(result.body).toMatch('Mijn Uitkering');
     expect(result.body).toMatch('Er is iets misgegaan');
     if (!result.body) {
@@ -197,10 +190,8 @@ describe('Loading the uitkeringspagina', () => {
 
 describe('Unexpected requests', () => {
   test('No cookies set should redirect to login page', async() => {
-    const client = new ApiClient('test', 'test', 'test');
-    const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
 
-    const result = await uitkeringsRequestHandler('', client, dynamoDBClient);
+    const result = await requestHandler.handleRequest('');
     expect(result.statusCode).toBe(302);
     expect(result!.headers!.Location).toMatch('/login');
   });
