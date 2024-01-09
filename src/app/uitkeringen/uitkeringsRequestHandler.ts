@@ -5,46 +5,71 @@ import { Response } from '@gemeentenijmegen/apigateway-http/lib/V2/Response';
 import { Session } from '@gemeentenijmegen/session';
 import * as template from './templates/uitkeringen.mustache';
 import * as uitkering from './templates/uitkerings-item.mustache';
+import { MdiFileMultiple } from '../../shared/Icons';
+import { nav } from '../../shared/nav';
 import { UitkeringsApi } from './UitkeringsApi';
 import { render } from '../../shared/render';
 
-export async function uitkeringsRequestHandler(cookies: string, apiClient: ApiClient, dynamoDBClient: DynamoDBClient) {
-  if (!apiClient || !dynamoDBClient) { throw new Error('all handler params are required'); }
-  console.time('request');
-  console.timeLog('request', 'start request');
+interface Config {
+  apiClient: ApiClient;
+  dynamoDBClient: DynamoDBClient;
+  showZaken: boolean; //Show zaken in menu
+}
 
-  let session = new Session(cookies, dynamoDBClient);
-  await session.init();
-  console.timeLog('request', 'init session');
-  if (session.isLoggedIn() == true) {
-    // Get API data
-    const response = await handleLoggedinRequest(session, apiClient);
-    console.timeEnd('request');
-    return response;
+export class uitkeringsRequestHandler {
+  private config: Config;
+  constructor(config: Config) {
+    this.config = config;
+    const zakenNav = {
+      url: '/zaken',
+      title: 'Zaken',
+      description: 'Bekijk de status van uw zaken en aanvragen.',
+      label: 'Bekijk zaken',
+      icon: MdiFileMultiple.default,
+    };
+    if (config?.showZaken) {
+      nav.push(zakenNav);
+    }
   }
-  console.timeEnd('request');
-  return Response.redirect('/login');
-}
 
-async function handleLoggedinRequest(session: Session, apiClient: ApiClient) {
-  const bsn = session.getValue('bsn');
-  console.timeLog('request', 'Api Client init');
-  const uitkeringsApi = new UitkeringsApi(apiClient);
-  console.timeLog('request', 'UitkeringsApi');
-  const data = await uitkeringsApi.getUitkeringen(bsn);
-  data.volledigenaam = session.getValue('username');
-  data.multipleUitkeringen = (data?.uitkeringen?.length > 1);
+  async handleRequest(cookies: string) {
+    console.time('request');
+    console.timeLog('request', 'start request');
+  
+    let session = new Session(cookies, this.config.dynamoDBClient);
+    await session.init();
+    console.timeLog('request', 'init session');
+    if (session.isLoggedIn() == true) {
+      // Get API data
+      const response = await this.handleLoggedinRequest(session);
+      console.timeEnd('request');
+      return response;
+    }
+    console.timeEnd('request');
+    return Response.redirect('/login');
+  }  
 
-  const html = await renderHtml(data);
+  private async handleLoggedinRequest(session: Session) {
+    const bsn = session.getValue('bsn');
+    console.timeLog('request', 'Api Client init');
+    const uitkeringsApi = new UitkeringsApi(this.config.apiClient);
+    console.timeLog('request', 'UitkeringsApi');
+    const data = await uitkeringsApi.getUitkeringen(bsn);
+    data.volledigenaam = session.getValue('username');
+    data.multipleUitkeringen = (data?.uitkeringen?.length > 1);
 
-  return Response.html(html, 200, session.getCookie());
-}
+    const html = await this.renderHtml(data);
 
-async function renderHtml(data: any) {
-  data.title = 'Uitkeringen';
-  data.shownav = true;
+    return Response.html(html, 200, session.getCookie());
+  }
 
-  // render page
-  const html = await render(data, template.default, { uitkering: uitkering.default });
-  return html;
+  async renderHtml(data: any) {
+    data.title = 'Uitkeringen';
+    data.shownav = true;
+    data.nav = nav;
+
+    // render page
+    const html = await render(data, template.default, { uitkering: uitkering.default });
+    return html;
+  }
 }
