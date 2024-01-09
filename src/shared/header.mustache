@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon">
-    
     <!-- Preload fonts and external styles -->
     <link rel="preload" 
           as="style"
@@ -62,11 +61,11 @@
             <span class="sr-only">Menu</span>
             <span class="navbar-toggler-icon" aria-hidden="true"></span>
         </button>
-        <a class="navbar-brand" href="https://nijmegen.nl">
+        <a class="navbar-brand" href="/">
             <span class="sr-only">Hoofdpagina</span>
             <div class="navbar-brand-container">
                 <img src="https://componenten.nijmegen.nl/v6.0.0/img/beeldmerklabelwit.svg" class="logo-labeled" alt="Logo Nijmegen">
-                <img src="https://componenten.nijmegen.nl/v6.0.0/img/beeldmerkwit.svg" class="logo" aria-hidden="true" alt="Logo Nijmegen">
+                <img src="https://componenten.nijmegen.nl/v6.0.0/img/beeldmerkwit.svg" class="logo" aria-hidden="true" alt="">
             </div>
         </a>
         {{#shownav}}
@@ -75,12 +74,11 @@
                 <li class="nav-item">
                     <a href="/" class="nav-link">Overzicht</a>
                 </li>
+            {{#nav}}
                 <li class="nav-item">
-                    <a href="/persoonsgegevens" class="nav-link">Persoonsgegevens</a>
+                    <a href="{{{url}}}" class="nav-link">{{title}}</a>
                 </li>
-                <li class="nav-item">
-                    <a href="/uitkeringen" class="nav-link">Uitkeringen</a>
-                </li>
+            {{/nav}}
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">

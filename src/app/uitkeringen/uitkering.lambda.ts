@@ -16,6 +16,7 @@ async function init() {
 }
 
 const initPromise = init();
+const requestHandler = new uitkeringsRequestHandler({ apiClient, dynamoDBClient, showZaken: process.env.SHOW_ZAKEN == 'True' });
 
 function parseEvent(event: APIGatewayProxyEventV2) {
   return {
@@ -27,7 +28,7 @@ exports.handler = async (event: any, _context: any) => {
   try {
     const params = parseEvent(event);
     await initPromise;
-    return await uitkeringsRequestHandler(params.cookies, apiClient, dynamoDBClient);
+    return await requestHandler.handleRequest(params.cookies);
 
   } catch (err) {
     console.error(err);
