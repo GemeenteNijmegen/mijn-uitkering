@@ -5,9 +5,9 @@ import { Response } from '@gemeentenijmegen/apigateway-http/lib/V2/Response';
 import { Session } from '@gemeentenijmegen/session';
 import * as template from './templates/uitkeringen.mustache';
 import * as uitkering from './templates/uitkerings-item.mustache';
+import { UitkeringsApi } from './UitkeringsApi';
 import { MdiFileMultiple } from '../../shared/Icons';
 import { nav } from '../../shared/nav';
-import { UitkeringsApi } from './UitkeringsApi';
 import { render } from '../../shared/render';
 
 interface Config {
@@ -35,7 +35,7 @@ export class uitkeringsRequestHandler {
   async handleRequest(cookies: string) {
     console.time('request');
     console.timeLog('request', 'start request');
-  
+
     let session = new Session(cookies, this.config.dynamoDBClient);
     await session.init();
     console.timeLog('request', 'init session');
@@ -47,7 +47,7 @@ export class uitkeringsRequestHandler {
     }
     console.timeEnd('request');
     return Response.redirect('/login');
-  }  
+  }
 
   private async handleLoggedinRequest(session: Session) {
     const bsn = session.getValue('bsn');
