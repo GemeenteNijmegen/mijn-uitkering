@@ -61,7 +61,8 @@ beforeEach(() => {
       data: {
         M: {
           loggedin: { BOOL: true },
-          bsn: { S: '900026236' },
+          identifier: { S: '900026236' },
+          user_type: { S: 'person' },
         },
       },
     },
@@ -110,6 +111,30 @@ describe('Loading the uitkeringspagina', () => {
       return;
     }
     fs.writeFile(path.join(__dirname, 'output', 'test.html'), result.body, () => {});
+  });
+
+  test('Companies are redirected', async () => {
+    const getItemOutput: Partial<GetItemCommandOutput> = {
+      Item: {
+        data: {
+          M: {
+            loggedin: { BOOL: true },
+            identifier: { S: '12345678' },
+            user_type: { S: 'company' },
+          },
+        },
+      },
+    };
+    ddbMock.mockImplementation(() => getItemOutput);
+
+    const output: GetSecretValueCommandOutput = {
+      $metadata: {},
+      SecretString: 'ditiseennepgeheim',
+    };
+    secretsMock.mockImplementation(() => output);
+
+    const result = await requestHandler.handleRequest('session=12345');
+    expect(result.statusCode).toBe(302);
   });
 
 

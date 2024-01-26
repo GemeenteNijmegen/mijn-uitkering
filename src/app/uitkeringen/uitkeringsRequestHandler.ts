@@ -6,8 +6,7 @@ import { Session } from '@gemeentenijmegen/session';
 import * as template from './templates/uitkeringen.mustache';
 import * as uitkering from './templates/uitkerings-item.mustache';
 import { UitkeringsApi } from './UitkeringsApi';
-import { MdiFileMultiple } from '../../shared/Icons';
-import { nav } from '../../shared/nav';
+import { Navigation } from '../../shared/Navigation';
 import { render } from '../../shared/render';
 
 interface Config {
@@ -20,16 +19,6 @@ export class uitkeringsRequestHandler {
   private config: Config;
   constructor(config: Config) {
     this.config = config;
-    const zakenNav = {
-      url: '/zaken',
-      title: 'Zaken',
-      description: 'Bekijk de status van uw zaken en aanvragen.',
-      label: 'Bekijk zaken',
-      icon: MdiFileMultiple.default,
-    };
-    if (config?.showZaken) {
-      nav.push(zakenNav);
-    }
   }
 
   async handleRequest(cookies: string) {
@@ -50,13 +39,22 @@ export class uitkeringsRequestHandler {
   }
 
   private async handleLoggedinRequest(session: Session) {
-    const bsn = session.getValue('bsn');
+    const userType = session.getValue('user_type');
+    // Companies can log in, but can't use this page.
+    if (userType != 'person') {
+      return Response.redirect('/');
+    }
+    const bsn = session.getValue('identifier');
+
     console.timeLog('request', 'Api Client init');
     const uitkeringsApi = new UitkeringsApi(this.config.apiClient);
     console.timeLog('request', 'UitkeringsApi');
     const data = await uitkeringsApi.getUitkeringen(bsn);
     data.volledigenaam = session.getValue('username');
     data.multipleUitkeringen = (data?.uitkeringen?.length > 1);
+
+    const navigation = new Navigation(userType, { showZaken: this.config.showZaken, currentPath: '/uitkeringen' });
+    data.nav = navigation.items;
 
     const html = await this.renderHtml(data);
 
@@ -66,7 +64,6 @@ export class uitkeringsRequestHandler {
   async renderHtml(data: any) {
     data.title = 'Uitkeringen';
     data.shownav = true;
-    data.nav = nav;
 
     // render page
     const html = await render(data, template.default, { uitkering: uitkering.default });
